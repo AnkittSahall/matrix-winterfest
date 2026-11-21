@@ -22,6 +22,22 @@ function readJson(file) {
   return JSON.parse(fs.readFileSync(file, 'utf8'))
 }
 
+const ROOM_ALPH = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
+
+export function generateRoomCode() {
+  let out = ''
+  for (let i = 0; i < 6; i++) {
+    out += ROOM_ALPH[Math.floor(Math.random() * ROOM_ALPH.length)]
+  }
+  return out
+}
+
+export function normalizeRoomCode(code) {
+  return String(code || '')
+    .toUpperCase()
+    .replace(/[^A-Z0-9]/g, '')
+}
+
 export function defaultConfig() {
   return {
     configId: randomUUID(),
@@ -35,18 +51,31 @@ export function defaultConfig() {
     timerMinutes: 5,
     alertMinutes: 1,
     timerOverrides: {},
+    roomCode: generateRoomCode(),
+    lobbyOpen: false,
     createdAt: new Date().toISOString(),
   }
 }
 
 function emptyDb() {
+  const config = defaultConfig()
   return {
     competitionId: randomUUID(),
-    config: defaultConfig(),
+    roomCode: config.roomCode,
+    lobbyOpen: false,
+    config,
     runs: {},
     drafts: {},
     sessions: {},
   }
+}
+
+function withLobbyFields(config) {
+  const cfg = { ...(config || defaultConfig()) }
+  if (!cfg.roomCode) cfg.roomCode = generateRoomCode()
+  cfg.lobbyOpen = !!cfg.lobbyOpen
+  cfg.roomCode = normalizeRoomCode(cfg.roomCode)
+  return cfg
 }
 
 export function usingSupabase() {
@@ -92,6 +121,9 @@ function fileLoad() {
     if (fs.existsSync(STORE_PATH)) {
       memoryDb = JSON.parse(fs.readFileSync(STORE_PATH, 'utf8'))
       if (!memoryDb.competitionId) memoryDb.competitionId = randomUUID()
+      memoryDb.config = withLobbyFields(memoryDb.config)
+      memoryDb.roomCode = memoryDb.config.roomCode
+      memoryDb.lobbyOpen = !!memoryDb.config.lobbyOpen
       return memoryDb
     }
   } catch {
@@ -116,7 +148,16 @@ async function ensureMeta() {
   const client = sb()
   const { data, error } = await client.from('matrix_meta').select('*').eq('id', 1).maybeSingle()
   if (error) throw new Error(`Supabase meta read: ${error.message}`)
-  if (data) return data
+  if (data) {
+    const config = withLobbyFields(data.config)
+    if (config.roomCode !== data.config?.roomCode || !!data.config?.lobbyOpen !== config.lobbyOpen) {
+      await client
+        .from('matrix_meta')
+        .update({ config, updated_at: new Date().toISOString() })
+        .eq('id', 1)
+    }
+    return { ...data, config }
+  }
   const row = {
     id: 1,
     competition_id: randomUUID(),
@@ -167,9 +208,12 @@ export async function loadDb() {
     sessions[row.token] = { at: row.created_at }
   }
 
+  const config = withLobbyFields(meta.config)
   return {
     competitionId,
-    config: meta.config,
+    roomCode: config.roomCode,
+    lobbyOpen: !!config.lobbyOpen,
+    config,
     runs,
     drafts,
     sessions,
@@ -240,46 +284,62 @@ export async function removeSession(token) {
 }
 
 export async function saveConfig(config, competitionId) {
+  const next = withLobbyFields(config)
   if (!usingSupabase()) {
     const d = fileLoad()
-    d.config = config
+    d.config = next
+    d.roomCode = next.roomCode
+    d.lobbyOpen = !!next.lobbyOpen
     fileSave(d)
-    return
+    return next
   }
   const client = sb()
   const meta = await ensureMeta()
   const { error } = await client.from('matrix_meta').upsert({
     id: 1,
     competition_id: competitionId || meta.competition_id,
-    config,
+    config: next,
     updated_at: new Date().toISOString(),
   })
   if (error) throw new Error(`Supabase save config: ${error.message}`)
+  return next
 }
 
-/** New competition — old runs kept by competition_id; UI only shows current. */
+export async function setLobbyOpen(open) {
+  const d = await loadDb()
+  d.config = withLobbyFields(d.config)
+  d.config.lobbyOpen = !!open
+  d.lobbyOpen = !!open
+  await saveConfig(d.config, d.competitionId)
+  return { roomCode: d.config.roomCode, lobbyOpen: d.lobbyOpen, competitionId: d.competitionId }
+}
+
+/** New competition — old runs archived by competition_id. Keeps admin sessions. */
 export async function resetCompetition() {
   const newId = randomUUID()
+  const roomCode = generateRoomCode()
   if (!usingSupabase()) {
     const d = fileLoad()
     d.competitionId = newId
     d.runs = {}
     d.drafts = {}
-    d.sessions = {}
+    d.config = withLobbyFields({ ...d.config, roomCode, lobbyOpen: false })
+    d.roomCode = roomCode
+    d.lobbyOpen = false
     fileSave(d)
-    return { competitionId: newId }
+    return { competitionId: newId, roomCode, lobbyOpen: false }
   }
   const client = sb()
   const meta = await ensureMeta()
+  const config = withLobbyFields({ ...meta.config, roomCode, lobbyOpen: false })
   const { error } = await client.from('matrix_meta').upsert({
     id: 1,
     competition_id: newId,
-    config: meta.config,
+    config,
     updated_at: new Date().toISOString(),
   })
   if (error) throw new Error(`Supabase reset: ${error.message}`)
-  await client.from('matrix_sessions').delete().neq('token', '')
-  return { competitionId: newId }
+  return { competitionId: newId, roomCode, lobbyOpen: false }
 }
 
 export function publicConfig(cfg) {

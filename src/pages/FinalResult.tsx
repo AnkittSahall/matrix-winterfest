@@ -92,15 +92,9 @@ export function FinalResult() {
         <Link className="btn btn-secondary" to="/">
           Go to Home
         </Link>
-        <button
-          className="btn btn-primary"
-          onClick={async () => {
-            const r = await api.createRun(run.companyName)
-            window.location.href = `/play/${r.runId}`
-          }}
-        >
-          Play again
-        </button>
+        <Link className="btn btn-primary" to="/">
+          Play again (new Room ID)
+        </Link>
       </div>
     </div>
   )

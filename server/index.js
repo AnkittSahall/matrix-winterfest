@@ -15,6 +15,8 @@ import {
   removeSession,
   saveConfig,
   resetCompetition,
+  setLobbyOpen,
+  normalizeRoomCode,
 } from './store.js'
 
 const PORT = process.env.PORT || 3001
@@ -235,6 +237,20 @@ app.get(
   }),
 )
 
+/** Public lobby status — never returns the room code. */
+app.get(
+  '/api/lobby',
+  asyncHandler(async (_req, res) => {
+    const d = await loadDb()
+    res.json({
+      open: !!d.lobbyOpen,
+      message: d.lobbyOpen
+        ? 'Room is open — enter the Room ID from your facilitator.'
+        : 'Waiting for facilitator to activate the room.',
+    })
+  }),
+)
+
 app.get('/api/reference/countries', (_req, res) => {
   res.json(seed.countries)
 })
@@ -280,7 +296,13 @@ app.get(
   requireAdmin,
   asyncHandler(async (_req, res) => {
     const d = await loadDb()
-    res.json({ ...d.config, competitionId: d.competitionId, scenarios: seed.scenarios })
+    res.json({
+      ...d.config,
+      competitionId: d.competitionId,
+      roomCode: d.roomCode,
+      lobbyOpen: !!d.lobbyOpen,
+      scenarios: seed.scenarios,
+    })
   }),
 )
 
@@ -334,6 +356,8 @@ app.put(
       timerMinutes,
       alertMinutes,
       timerOverrides: body.timerOverrides || {},
+      roomCode: prev.roomCode,
+      lobbyOpen: !!prev.lobbyOpen,
       createdAt: new Date().toISOString(),
     }
     await saveConfig(d.config, d.competitionId)
@@ -357,6 +381,16 @@ app.post(
   requireAdmin,
   asyncHandler(async (_req, res) => {
     const result = await resetCompetition()
+    res.json({ ok: true, ...result })
+  }),
+)
+
+app.post(
+  '/api/admin/lobby',
+  requireAdmin,
+  asyncHandler(async (req, res) => {
+    const open = !!req.body?.open
+    const result = await setLobbyOpen(open)
     res.json({ ok: true, ...result })
   }),
 )
@@ -385,6 +419,15 @@ app.post(
       return res.status(400).json({ error: 'Company name must be 2–40 characters' })
     }
     const d = await loadDb()
+    if (!d.lobbyOpen) {
+      return res.status(403).json({
+        error: 'Room is locked. Wait for the facilitator to activate the competition.',
+      })
+    }
+    const given = normalizeRoomCode(req.body?.roomCode)
+    if (!given || given !== normalizeRoomCode(d.roomCode)) {
+      return res.status(403).json({ error: 'Invalid Room ID. Ask your facilitator for the code.' })
+    }
     const cfg = { ...d.config }
     const runId = randomUUID()
     const run = {

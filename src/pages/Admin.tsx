@@ -142,6 +142,99 @@ export function Admin() {
         Configure the game, watch live team results, and download Excel for announcements.
       </p>
 
+      <h3 className="section-label">Room control</h3>
+      <p className="page-help">
+        Share this Room ID with teams. Continue stays locked until you activate the room.
+      </p>
+      <div
+        className="banner"
+        style={{ display: 'flex', flexWrap: 'wrap', gap: 12, alignItems: 'center' }}
+      >
+        <div>
+          <div className="page-help" style={{ marginBottom: 4 }}>
+            Room ID
+          </div>
+          <strong className="mono" style={{ fontSize: '1.6rem', letterSpacing: '0.08em' }}>
+            {cfg.roomCode || '———'}
+          </strong>
+        </div>
+        <div>
+          <div className="page-help" style={{ marginBottom: 4 }}>
+            Status
+          </div>
+          <strong style={{ color: cfg.lobbyOpen ? 'var(--good)' : 'var(--bad)' }}>
+            {cfg.lobbyOpen ? 'OPEN — teams can join' : 'LOCKED — waiting to activate'}
+          </strong>
+        </div>
+      </div>
+      <div className="actions-row">
+        <button
+          className="btn btn-secondary"
+          onClick={() => {
+            if (!cfg.roomCode) return
+            void navigator.clipboard.writeText(cfg.roomCode).then(
+              () => setSummary(`Room ID copied: ${cfg.roomCode}`),
+              () => setError('Could not copy Room ID'),
+            )
+          }}
+        >
+          Copy Room ID
+        </button>
+        {cfg.lobbyOpen ? (
+          <button
+            className="btn btn-secondary"
+            onClick={() =>
+              void api
+                .setLobby(false)
+                .then(async () => {
+                  setSummary('Room locked. New teams cannot Continue.')
+                  await load()
+                })
+                .catch((e) => setError(e instanceof Error ? e.message : 'Failed'))
+            }
+          >
+            Lock room
+          </button>
+        ) : (
+          <button
+            className="btn btn-primary"
+            onClick={() =>
+              void api
+                .setLobby(true)
+                .then(async () => {
+                  setSummary(`Room activated. Share Room ID ${cfg.roomCode} with teams.`)
+                  await load()
+                })
+                .catch((e) => setError(e instanceof Error ? e.message : 'Failed'))
+            }
+          >
+            Activate room
+          </button>
+        )}
+        <button
+          className="btn btn-secondary"
+          onClick={() => {
+            if (
+              !window.confirm(
+                'Reset competition? New Room ID is created, lobby locks, old teams leave the board.',
+              )
+            ) {
+              return
+            }
+            void api
+              .resetCompetition()
+              .then(async (r) => {
+                setResults([])
+                setSummary(`Reset done. New Room ID: ${r.roomCode}. Activate when ready.`)
+                await load()
+              })
+              .catch((e) => setError(e instanceof Error ? e.message : 'Reset failed'))
+          }}
+        >
+          Reset competition
+        </button>
+      </div>
+
       <h3 className="section-label">Competition results</h3>
       <p className="page-help">
         Teams are ranked by total profit. Refresh after teams finish. Download opens in Excel.
@@ -160,32 +253,7 @@ export function Admin() {
         >
           Download Excel (.csv)
         </button>
-        <button
-          className="btn btn-secondary"
-          onClick={() => {
-            if (
-              !window.confirm(
-                'Reset competition? Current teams disappear from the board (archived). New teams start fresh.',
-              )
-            ) {
-              return
-            }
-            void api
-              .resetCompetition()
-              .then(async (r) => {
-                setSummary(`New competition started (${r.competitionId.slice(0, 8)}…)`)
-                setResults([])
-                await load()
-              })
-              .catch((e) => setError(e instanceof Error ? e.message : 'Reset failed'))
-          }}
-        >
-          Reset competition
-        </button>
       </div>
-      {cfg.competitionId && (
-        <p className="page-help mono">Active competition: {cfg.competitionId}</p>
-      )}
       {results.length === 0 ? (
         <div className="empty">No completed runs yet. Results appear when a team finishes all rounds.</div>
       ) : (
@@ -343,7 +411,7 @@ export function Admin() {
           Home
         </Link>
         <button className="btn btn-primary" onClick={() => void save()}>
-          Save and activate
+          Save setup
         </button>
       </div>
     </div>

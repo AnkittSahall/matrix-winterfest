@@ -61,8 +61,12 @@ export const api = {
   countries: () => req<{ home: Record<string, unknown>; countries: Country[] }>('/api/reference/countries'),
   entryModes: () => req<EntryMode[]>('/api/reference/entry-modes'),
   glossary: () => req<{ term: string; definition: string }[]>('/api/reference/glossary'),
-  createRun: (companyName: string) =>
-    req<RunView>('/api/runs', { method: 'POST', body: JSON.stringify({ companyName }) }),
+  lobby: () => req<{ open: boolean; message: string }>('/api/lobby'),
+  createRun: (companyName: string, roomCode: string) =>
+    req<RunView>('/api/runs', {
+      method: 'POST',
+      body: JSON.stringify({ companyName, roomCode }),
+    }),
   listRuns: () =>
     req<
       { runId: string; companyName: string; completedAt: string; roundsPlayed: number; totalProfitM: number }[]
@@ -108,10 +112,21 @@ export const api = {
       results: AdminResultRow[]
     }>('/api/admin/results'),
   resetCompetition: () =>
-    req<{ ok: boolean; competitionId: string }>('/api/admin/reset-competition', {
-      method: 'POST',
-      body: '{}',
-    }),
+    req<{ ok: boolean; competitionId: string; roomCode: string; lobbyOpen: boolean }>(
+      '/api/admin/reset-competition',
+      {
+        method: 'POST',
+        body: '{}',
+      },
+    ),
+  setLobby: (open: boolean) =>
+    req<{ ok: boolean; roomCode: string; lobbyOpen: boolean; competitionId: string }>(
+      '/api/admin/lobby',
+      {
+        method: 'POST',
+        body: JSON.stringify({ open }),
+      },
+    ),
 }
 
 export type AdminResultRow = {
@@ -162,4 +177,6 @@ export type AdminConfig = {
   scenarios: { scenarioId: number; title: string }[]
   version?: number
   competitionId?: string
+  roomCode?: string
+  lobbyOpen?: boolean
 }
