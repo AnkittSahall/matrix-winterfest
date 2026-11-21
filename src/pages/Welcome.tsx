@@ -40,15 +40,13 @@ function summaryLine(cfg: PublicConfig | null) {
 export function Welcome({ topTabs }: { topTabs?: ReactNode }) {
   const navigate = useNavigate()
   const [companyName, setCompanyName] = useState('')
-  const [roomCode, setRoomCode] = useState('')
   const [cfg, setCfg] = useState<PublicConfig | null>(null)
   const [lobbyOpen, setLobbyOpen] = useState(false)
-  const [lobbyMsg, setLobbyMsg] = useState('Checking room status…')
+  const [lobbyMsg, setLobbyMsg] = useState('Checking if the competition is open…')
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
   const companyOk = companyName.trim().length >= 2 && companyName.trim().length <= 40
-  const roomOk = roomCode.trim().replace(/[^a-zA-Z0-9]/g, '').length >= 4
-  const ready = companyOk && roomOk && lobbyOpen
+  const ready = companyOk && lobbyOpen
 
   useEffect(() => {
     api.publicConfig().then(setCfg).catch(() => setCfg(null))
@@ -87,7 +85,7 @@ export function Welcome({ topTabs }: { topTabs?: ReactNode }) {
     setBusy(true)
     setError('')
     try {
-      const run = await api.createRun(companyName.trim(), roomCode.trim())
+      const run = await api.createRun(companyName.trim())
       navigate(`/play/${run.runId}`)
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Could not start')
@@ -150,35 +148,24 @@ export function Welcome({ topTabs }: { topTabs?: ReactNode }) {
                 placeholder="Your Company"
                 value={companyName}
                 onChange={(e) => setCompanyName(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && ready) void begin()
+                }}
                 maxLength={40}
                 autoFocus
               />
             </div>
-            <div className="field welcome-field">
-              <label htmlFor="room">Room ID</label>
-              <input
-                id="room"
-                placeholder="From facilitator"
-                value={roomCode}
-                onChange={(e) => setRoomCode(e.target.value.toUpperCase())}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' && ready) void begin()
-                }}
-                maxLength={12}
-                autoComplete="off"
-                spellCheck={false}
-              />
-              {!lobbyOpen && <span className="field-error">{lobbyMsg}</span>}
-              {lobbyOpen && !error && (
-                <span className="page-help" style={{ marginTop: 6, display: 'block' }}>
-                  Room is open — enter the Room ID, then Continue.
-                </span>
-              )}
-              {error && <span className="field-error">{error}</span>}
-            </div>
-            <button className="btn btn-primary btn-lg" disabled={!ready || busy} onClick={() => void begin()}>
+            <button
+              className="btn btn-primary btn-lg"
+              disabled={!ready || busy}
+              onClick={() => void begin()}
+            >
               {busy ? 'Starting…' : lobbyOpen ? 'Continue' : 'Waiting for activate…'}
             </button>
+            <div className="welcome-cta-note">
+              {!lobbyOpen && <span className="field-error">{lobbyMsg}</span>}
+              {error && <span className="field-error">{error}</span>}
+            </div>
           </motion.div>
         </div>
 

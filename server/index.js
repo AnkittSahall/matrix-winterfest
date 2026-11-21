@@ -15,7 +15,6 @@ import {
   saveConfig,
   resetCompetition,
   setLobbyOpen,
-  normalizeRoomCode,
   getMetaState,
   getRunById,
   getDraftFor,
@@ -236,8 +235,8 @@ app.get(
     res.json({
       open: !!meta.lobbyOpen,
       message: meta.lobbyOpen
-        ? 'Room is open — enter the Room ID from your facilitator.'
-        : 'Waiting for facilitator to activate the room.',
+        ? 'Competition is open — enter your company name and Continue.'
+        : 'Waiting for facilitator to activate the competition.',
     })
   }),
 )
@@ -412,12 +411,8 @@ app.post(
     const meta = await getMetaState()
     if (!meta.lobbyOpen) {
       return res.status(403).json({
-        error: 'Room is locked. Wait for the facilitator to activate the competition.',
+        error: 'Competition is locked. Wait for the facilitator to activate.',
       })
-    }
-    const given = normalizeRoomCode(req.body?.roomCode)
-    if (!given || given !== normalizeRoomCode(meta.roomCode)) {
-      return res.status(403).json({ error: 'Invalid Room ID. Ask your facilitator for the code.' })
     }
     const cfg = { ...meta.config }
     const runId = randomUUID()

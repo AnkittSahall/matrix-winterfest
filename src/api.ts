@@ -62,10 +62,10 @@ export const api = {
   entryModes: () => req<EntryMode[]>('/api/reference/entry-modes'),
   glossary: () => req<{ term: string; definition: string }[]>('/api/reference/glossary'),
   lobby: () => req<{ open: boolean; message: string }>('/api/lobby'),
-  createRun: (companyName: string, roomCode: string) =>
+  createRun: (companyName: string) =>
     req<RunView>('/api/runs', {
       method: 'POST',
-      body: JSON.stringify({ companyName, roomCode }),
+      body: JSON.stringify({ companyName }),
     }),
   listRuns: () =>
     req<

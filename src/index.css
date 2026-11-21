@@ -693,6 +693,15 @@ tr:last-child td {
   max-width: 560px;
 }
 
+.welcome-cta-note {
+  grid-column: 1 / -1;
+  min-height: 1.2em;
+}
+
+.welcome-cta-note .field-error {
+  margin: 0;
+}
+
 .welcome-field label {
   color: rgba(255, 255, 255, 0.7);
 }
