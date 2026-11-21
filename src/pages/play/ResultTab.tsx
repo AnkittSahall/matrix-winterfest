@@ -116,7 +116,7 @@ function LineChart({
           $M
         </text>
         <text x={w / 2} y={h - 2} textAnchor="middle" className="cum-chart-axis">
-          Round (0 = start)
+          Round
         </text>
       </svg>
     </div>
