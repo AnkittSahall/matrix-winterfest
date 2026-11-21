@@ -114,6 +114,7 @@ async function lazyAutoLock(run, competitionId) {
       timeUsedSec,
       lockedAt: new Date().toISOString(),
       allocations,
+      countryProfits: resolved.countryProfits || [],
     })
     run.cumulativeProfitM = round2(run.cumulativeProfitM + resolved.profitM)
     run.currentPoolM = closing
@@ -122,6 +123,23 @@ async function lazyAutoLock(run, competitionId) {
   run.roundDeadlineAt = null
   await persistRun(run, competitionId)
   return run
+}
+
+function countryProfitsForHistory(h) {
+  if (Array.isArray(h.countryProfits) && h.countryProfits.length) return h.countryProfits
+  if (!h.scenarioId || !h.allocations?.length) return []
+  try {
+    return (
+      resolveRound({
+        pool: h.openingPoolM ?? 0,
+        scenarioId: h.scenarioId,
+        allocations: h.allocations,
+        factorLookup: seed.factorLookup,
+      }).countryProfits || []
+    )
+  } catch {
+    return []
+  }
 }
 
 function playerRunView(run) {
@@ -153,6 +171,7 @@ function playerRunView(run) {
       autoLocked: h.autoLocked,
       timeUsedSec: h.timeUsedSec,
       allocations: h.allocations || [],
+      countryProfits: countryProfitsForHistory(h),
     })),
     lastLockedAllocations:
       (run.history || []).find((h) => h.round === run.currentRound)?.allocations || null,
@@ -615,6 +634,7 @@ app.post(
       timeUsedSec,
       lockedAt: new Date().toISOString(),
       allocations,
+      countryProfits: resolved.countryProfits || [],
     })
     run.cumulativeProfitM = round2(run.cumulativeProfitM + resolved.profitM)
     run.currentPoolM = closing

@@ -7,14 +7,17 @@ export function resolveRound({ pool, scenarioId, allocations, factorLookup }) {
   }
 
   let profit = 0
+  const countryProfits = []
   for (const a of allocations) {
     const f = factorLookup(scenarioId, a.countryCode, a.modeCode)
     if (f == null) throw new Error(`Missing factor ${scenarioId}/${a.countryCode}/${a.modeCode}`)
-    profit += a.amountM * (f - 1)
+    const p = round2(a.amountM * (f - 1))
+    countryProfits.push({ countryCode: a.countryCode, profitM: p })
+    profit += p
   }
   profit = round2(profit)
   const idle = round2(pool - invested)
-  return { investedM: invested, idleM: idle, profitM: profit }
+  return { investedM: invested, idleM: idle, profitM: profit, countryProfits }
 }
 
 export function nextPool({ budgetMode, startBudgetM, pool, profitM }) {

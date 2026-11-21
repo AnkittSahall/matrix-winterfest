@@ -33,6 +33,7 @@ export type RunView = {
     autoLocked: boolean
     timeUsedSec: number
     allocations: AllocationRow[]
+    countryProfits?: { countryCode: string; profitM: number }[]
   }[]
   lastLockedAllocations: AllocationRow[] | null
   finished?: boolean

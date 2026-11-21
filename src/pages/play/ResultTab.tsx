@@ -1,7 +1,13 @@
-import type { RunView } from '../../api'
+import { useEffect, useMemo, useState } from 'react'
+import { api, type RunView } from '../../api'
 
 function money(n: number) {
   return `$${n.toFixed(2)} M`
+}
+
+function moneyCell(n: number | null) {
+  if (n == null) return '—'
+  return n.toLocaleString('en-US', { maximumFractionDigits: 2, minimumFractionDigits: 0 })
 }
 
 function niceMax(raw: number) {
@@ -33,8 +39,8 @@ function LineChart({
   yMax: number
 }) {
   const w = 520
-  const h = 260
-  const pad = { top: 28, right: 18, bottom: 42, left: 52 }
+  const h = 280
+  const pad = { top: 24, right: 16, bottom: 44, left: 54 }
   const innerW = w - pad.left - pad.right
   const innerH = h - pad.top - pad.bottom
   const yTicks = buildTicks(yMin, yMax, 6)
@@ -84,7 +90,7 @@ function LineChart({
               stroke="rgba(15,23,42,0.05)"
               strokeWidth="1"
             />
-            <text x={xAt(t)} y={h - 14} textAnchor="middle" className="cum-chart-label">
+            <text x={xAt(t)} y={h - 16} textAnchor="middle" className="cum-chart-label">
               {t}
             </text>
           </g>
@@ -94,25 +100,25 @@ function LineChart({
           x2={w - pad.right}
           y1={yAt(0)}
           y2={yAt(0)}
-          stroke="rgba(15,23,42,0.35)"
-          strokeWidth="1.25"
+          stroke="rgba(15,23,42,0.4)"
+          strokeWidth="1.4"
         />
         <line
           x1={pad.left}
           x2={pad.left}
           y1={pad.top}
           y2={h - pad.bottom}
-          stroke="rgba(15,23,42,0.35)"
-          strokeWidth="1.25"
+          stroke="rgba(15,23,42,0.4)"
+          strokeWidth="1.4"
         />
         {path && (
-          <path d={path} fill="none" stroke="#e30613" strokeWidth="2.25" strokeLinejoin="round" />
+          <path d={path} fill="none" stroke="#111827" strokeWidth="2" strokeLinejoin="round" />
         )}
         {drawn.map((p) => (
-          <circle key={p.x} cx={xAt(p.x)} cy={yAt(p.y)} r="3.5" fill="#e30613" />
+          <circle key={p.x} cx={xAt(p.x)} cy={yAt(p.y)} r="3.2" fill="#111827" />
         ))}
-        <text x={10} y={16} className="cum-chart-axis">
-          $M
+        <text x={12} y={14} className="cum-chart-axis">
+          $
         </text>
         <text x={w / 2} y={h - 2} textAnchor="middle" className="cum-chart-axis">
           Round
@@ -147,14 +153,14 @@ function ProfitCharts({
   return (
     <div className="profit-charts">
       <LineChart
-        title="Profit this round ($M)"
+        title="Profit this round ($)"
         series={annual}
         xMax={numRounds}
         yMin={yMin}
         yMax={yMax}
       />
       <LineChart
-        title="Cumulative profit ($M)"
+        title="Cumulative profit ($)"
         series={cumulative}
         xMax={numRounds}
         yMin={yMin}
@@ -164,8 +170,103 @@ function ProfitCharts({
   )
 }
 
+function ProfitByCountry({
+  history,
+  numRounds,
+  names,
+}: {
+  history: RunView['history']
+  numRounds: number
+  names: Record<string, string>
+}) {
+  const rounds = Array.from({ length: numRounds + 1 }, (_, i) => i)
+  const sorted = history.slice().sort((a, b) => a.round - b.round)
+
+  const codes = useMemo(() => {
+    const set = new Set<string>()
+    for (const h of sorted) {
+      for (const c of h.countryProfits || []) set.add(c.countryCode)
+      for (const a of h.allocations || []) if (a.modeCode !== 'NONE') set.add(a.countryCode)
+    }
+    return [...set].sort((a, b) => (names[a] || a).localeCompare(names[b] || b))
+  }, [sorted, names])
+
+  const cell = (code: string, round: number) => {
+    if (round === 0) return 0
+    const h = sorted.find((x) => x.round === round)
+    if (!h) return null
+    const row = (h.countryProfits || []).find((c) => c.countryCode === code)
+    return row ? row.profitM : 0
+  }
+
+  const total = (round: number) => {
+    if (round === 0) return 0
+    const h = sorted.find((x) => x.round === round)
+    return h ? h.profitM : null
+  }
+
+  if (codes.length === 0) {
+    return <div className="empty">No country allocations yet.</div>
+  }
+
+  return (
+    <div className="table-wrap country-profit-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Country</th>
+            {rounds.map((r) => (
+              <th key={r}>{r}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {codes.map((code) => (
+            <tr key={code}>
+              <td>
+                <strong>{names[code] || code}</strong>
+              </td>
+              {rounds.map((r) => {
+                const v = cell(code, r)
+                return (
+                  <td key={r} className="mono">
+                    {moneyCell(v)}
+                  </td>
+                )
+              })}
+            </tr>
+          ))}
+          <tr className="country-profit-total">
+            <td>
+              <strong>Total Profit</strong>
+            </td>
+            {rounds.map((r) => {
+              const v = total(r)
+              return (
+                <td key={r} className="mono">
+                  <strong>{moneyCell(v)}</strong>
+                </td>
+              )
+            })}
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
 export function ResultTab({ run, onNext }: { run: RunView; onNext: () => void }) {
   const latest = run.history.find((h) => h.round === run.currentRound) || run.history.at(-1)
+  const [names, setNames] = useState<Record<string, string>>({})
+
+  useEffect(() => {
+    void api.countries().then((c) => {
+      const map: Record<string, string> = {}
+      for (const co of c.countries) map[co.code] = co.name
+      setNames(map)
+    })
+  }, [])
+
   if (!latest) return <div className="empty">No result yet.</div>
 
   const retPct =
@@ -175,7 +276,7 @@ export function ResultTab({ run, onNext }: { run: RunView; onNext: () => void })
   return (
     <div>
       <h2 className="page-title">Round {latest.round} result</h2>
-      <p className="page-help">Round totals only — no country-by-country profit is shown.</p>
+      <p className="page-help">Round summary, charts, and profit by country.</p>
 
       <div className="result-card">
         <div className="stats-plain" style={{ border: 'none', margin: 0, padding: 0 }}>
@@ -222,9 +323,13 @@ export function ResultTab({ run, onNext }: { run: RunView; onNext: () => void })
         )}
       </div>
 
-      <h3 className="section-label">Round &amp; cumulative profit</h3>
-      <p className="page-help">Starts at Round 0 ($0). Updates after every locked round.</p>
+      <h3 className="section-label">Round &amp; cumulative profit ($)</h3>
+      <p className="page-help">Starts at Round 0 ($0). Axis goes through all rounds.</p>
       <ProfitCharts history={run.history} numRounds={run.numRounds} />
+
+      <h3 className="section-label">Profit by country ($)</h3>
+      <p className="page-help">Columns are rounds. Round 0 is the start (all zero).</p>
+      <ProfitByCountry history={run.history} numRounds={run.numRounds} names={names} />
 
       <h3 className="section-label">History</h3>
       <div className="table-wrap">
