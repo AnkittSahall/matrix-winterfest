@@ -93,10 +93,28 @@ p {
   top: 0;
   z-index: 40;
   background: #fff;
-  border-bottom: 1px solid var(--line);
+  border-bottom: none;
   padding: 12px 0 0;
   margin-bottom: 18px;
   box-shadow: 0 6px 18px rgba(15, 23, 42, 0.05);
+}
+
+.play-sticky-top::after {
+  content: '';
+  display: block;
+  height: 3px;
+  margin-top: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(227, 6, 19, 0.15),
+    #ff5a63 18%,
+    #e30613 50%,
+    #ff5a63 82%,
+    rgba(227, 6, 19, 0.15)
+  );
+  box-shadow:
+    0 0 10px rgba(227, 6, 19, 0.45),
+    0 1px 0 rgba(255, 255, 255, 0.55) inset;
 }
 
 .play-body {
@@ -160,13 +178,14 @@ p {
   gap: 2px;
   min-width: 88px;
   padding: 8px 12px;
-  background: #111827;
-  color: rgba(255, 255, 255, 0.7);
+  background: var(--red);
+  color: rgba(255, 255, 255, 0.85);
   border-radius: 10px;
   font-size: 0.68rem;
   font-weight: 650;
   letter-spacing: 0.04em;
   text-transform: uppercase;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22);
 }
 
 .status-chip b {
@@ -179,8 +198,11 @@ p {
 }
 
 .status-chip-timer {
-  background: var(--red);
-  color: rgba(255, 255, 255, 0.85);
+  background: #8f0410;
+  color: rgba(255, 255, 255, 0.9);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 0 0 1px rgba(255, 255, 255, 0.2);
 }
 
 .status-chip-timer b {
@@ -1080,19 +1102,24 @@ tr:last-child td {
 
 .news-paragraphs {
   display: grid;
-  gap: 16px;
+  gap: 18px;
   margin: 16px 0 22px;
   max-width: 72ch;
 }
 
-.news-paragraphs p {
+.news-block h3 {
+  margin: 0 0 6px;
+  font-size: 1.02rem;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.4;
+}
+
+.news-block p {
+  margin: 0;
   color: var(--muted);
   font-size: 0.98rem;
   line-height: 1.65;
-}
-
-.news-paragraphs strong {
-  color: var(--text);
 }
 
 .result-card {

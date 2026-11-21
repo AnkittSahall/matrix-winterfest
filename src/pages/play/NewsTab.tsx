@@ -46,19 +46,16 @@ export function NewsTab({
   return (
     <div>
       <h2 className="page-title">
-        Round {round} of {numRounds} — {title}
+        Round {round} of {numRounds}: {title}
       </h2>
-      <p className="page-help">
-        Read the news carefully. Then allocate your budget on the Decision tab.
-      </p>
+      <p className="page-help">Read the news carefully. Then allocate your budget on the Decision tab.</p>
 
       <div className="news-paragraphs">
         {items.map((item) => (
-          <p key={item.order}>
-            <strong>{item.headline}</strong>
-            {' – '}
-            {item.body}
-          </p>
+          <article key={item.order} className="news-block">
+            <h3>{item.headline}</h3>
+            <p>{item.body}</p>
+          </article>
         ))}
       </div>
 

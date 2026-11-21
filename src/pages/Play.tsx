@@ -245,15 +245,26 @@ export function Play() {
               <button
                 className="btn btn-primary"
                 onClick={() => {
-                  dismissingAlert.current = true
-                  if (run.roundDeadlineAt) alertedDeadline.current = run.roundDeadlineAt
-                  setAlertOpen(false)
-                  setRun((prev) => (prev ? { ...prev, alertShown: true } : prev))
-                  void api.alertShown(runId).then(() => refresh())
-                  if (run.phase === 'NEWS') setTab('decision')
+                  void (async () => {
+                    dismissingAlert.current = true
+                    if (run.roundDeadlineAt) alertedDeadline.current = run.roundDeadlineAt
+                    setAlertOpen(false)
+                    setRun((prev) => (prev ? { ...prev, alertShown: true } : prev))
+                    void api.alertShown(runId).then(() => refresh())
+                    if (tab === 'decision') return
+                    try {
+                      if (run.phase === 'NEWS') {
+                        const r = await api.toDecision(runId)
+                        setRun(r)
+                      }
+                    } catch {
+                      /* still jump to Decision UI */
+                    }
+                    setTab('decision')
+                  })()
                 }}
               >
-                {run.phase === 'NEWS' ? 'Go to Decision' : 'OK, continue'}
+                {tab === 'decision' ? 'OK, continue' : 'Go to Decision'}
               </button>
             </div>
           </div>

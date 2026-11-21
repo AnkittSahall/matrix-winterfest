@@ -19,16 +19,12 @@ export function CountryInfoTab({ onStart }: { onStart?: () => void }) {
       <h2 className="page-title">Country Info</h2>
       <p className="page-help">
         Study the markets and entry modes. Your return depends on how well your choices fit each
-        round&apos;s news — not on a published formula.
+        round&apos;s news, not on a published formula.
       </p>
 
       <div className="help-box">
         <h3>What to do</h3>
-        <ol>
-          <li>Read the three entry modes and what they cost / mean.</li>
-          <li>Scan country risk and GDP tables.</li>
-          <li>Press <strong>Start</strong> when ready for Round 1 news.</li>
-        </ol>
+        <p>Read the three entry modes and what they cost. Scan country risk and GDP tables. Press Start when ready for Round 1 news.</p>
       </div>
 
       {onStart && (
