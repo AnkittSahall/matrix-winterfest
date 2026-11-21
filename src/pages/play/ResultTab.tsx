@@ -4,71 +4,162 @@ function money(n: number) {
   return `$${n.toFixed(2)} M`
 }
 
-function CumulativeChart({ history }: { history: RunView['history'] }) {
-  const points = history
-    .slice()
-    .sort((a, b) => a.round - b.round)
-    .map((h) => ({ round: h.round, value: h.cumulativeProfitM }))
+function niceMax(raw: number) {
+  if (raw <= 0) return 5
+  const padded = raw * 1.15
+  const mag = 10 ** Math.floor(Math.log10(padded))
+  const norm = padded / mag
+  const nice = norm <= 1 ? 1 : norm <= 2 ? 2 : norm <= 5 ? 5 : 10
+  return nice * mag
+}
 
-  if (points.length === 0) return null
+function buildTicks(minV: number, maxV: number, count = 6) {
+  const span = maxV - minV || 1
+  const step = span / (count - 1)
+  return Array.from({ length: count }, (_, i) => minV + step * i)
+}
 
-  const w = 560
-  const h = 200
-  const pad = { top: 20, right: 16, bottom: 36, left: 48 }
+function LineChart({
+  title,
+  series,
+  xMax,
+  yMin,
+  yMax,
+}: {
+  title: string
+  series: { x: number; y: number }[]
+  xMax: number
+  yMin: number
+  yMax: number
+}) {
+  const w = 520
+  const h = 260
+  const pad = { top: 28, right: 18, bottom: 42, left: 52 }
   const innerW = w - pad.left - pad.right
   const innerH = h - pad.top - pad.bottom
+  const yTicks = buildTicks(yMin, yMax, 6)
+  const xTicks = Array.from({ length: xMax + 1 }, (_, i) => i)
 
-  const vals = points.map((p) => p.value)
-  const minV = Math.min(0, ...vals)
-  const maxV = Math.max(0, ...vals)
-  const span = maxV - minV || 1
+  const xAt = (x: number) => pad.left + (x / Math.max(1, xMax)) * innerW
+  const yAt = (y: number) => pad.top + innerH - ((y - yMin) / (yMax - yMin || 1)) * innerH
 
-  const xAt = (i: number) =>
-    pad.left + (points.length === 1 ? innerW / 2 : (i / (points.length - 1)) * innerW)
-  const yAt = (v: number) => pad.top + innerH - ((v - minV) / span) * innerH
+  const drawn = series.filter((p) => p.x <= xMax)
+  const path = drawn
+    .map((p, i) => `${i === 0 ? 'M' : 'L'} ${xAt(p.x).toFixed(1)} ${yAt(p.y).toFixed(1)}`)
+    .join(' ')
 
-  const zeroY = yAt(0)
-  const line = points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${xAt(i)} ${yAt(p.value)}`).join(' ')
-  const area =
-    points.length > 0
-      ? `${line} L ${xAt(points.length - 1)} ${zeroY} L ${xAt(0)} ${zeroY} Z`
-      : ''
+  const formatY = (v: number) => {
+    const abs = Math.abs(v)
+    if (abs >= 10) return `${v.toFixed(0)}`
+    if (abs >= 1) return `${v.toFixed(1)}`
+    return `${v.toFixed(2)}`
+  }
 
   return (
-    <div className="cum-chart" aria-label="Cumulative profit by round">
-      <svg viewBox={`0 0 ${w} ${h}`} width="100%" role="img">
-        <line
-          x1={pad.left}
-          x2={w - pad.right}
-          y1={zeroY}
-          y2={zeroY}
-          stroke="rgba(15,23,42,0.18)"
-          strokeWidth="1"
-          strokeDasharray="4 4"
-        />
-        <path d={area} fill="rgba(227,6,19,0.10)" />
-        <path d={line} fill="none" stroke="#e30613" strokeWidth="2.5" strokeLinejoin="round" />
-        {points.map((p, i) => (
-          <g key={p.round}>
-            <circle cx={xAt(i)} cy={yAt(p.value)} r="4.5" fill="#e30613" />
-            <text
-              x={xAt(i)}
-              y={yAt(p.value) - 10}
-              textAnchor="middle"
-              className="cum-chart-value"
-            >
-              {p.value >= 0 ? '+' : ''}
-              {p.value.toFixed(1)}
-            </text>
-            <text x={xAt(i)} y={h - 12} textAnchor="middle" className="cum-chart-label">
-              R{p.round}
+    <div className="profit-chart-card">
+      <h4 className="profit-chart-title">{title}</h4>
+      <svg viewBox={`0 0 ${w} ${h}`} width="100%" role="img" aria-label={title}>
+        {yTicks.map((t) => (
+          <g key={`y-${t}`}>
+            <line
+              x1={pad.left}
+              x2={w - pad.right}
+              y1={yAt(t)}
+              y2={yAt(t)}
+              stroke="rgba(15,23,42,0.08)"
+              strokeWidth="1"
+            />
+            <text x={pad.left - 8} y={yAt(t) + 4} textAnchor="end" className="cum-chart-axis">
+              {formatY(t)}
             </text>
           </g>
         ))}
-        <text x={8} y={pad.top + 4} className="cum-chart-axis">
+        {xTicks.map((t) => (
+          <g key={`x-${t}`}>
+            <line
+              x1={xAt(t)}
+              x2={xAt(t)}
+              y1={pad.top}
+              y2={h - pad.bottom}
+              stroke="rgba(15,23,42,0.05)"
+              strokeWidth="1"
+            />
+            <text x={xAt(t)} y={h - 14} textAnchor="middle" className="cum-chart-label">
+              {t}
+            </text>
+          </g>
+        ))}
+        <line
+          x1={pad.left}
+          x2={w - pad.right}
+          y1={yAt(0)}
+          y2={yAt(0)}
+          stroke="rgba(15,23,42,0.35)"
+          strokeWidth="1.25"
+        />
+        <line
+          x1={pad.left}
+          x2={pad.left}
+          y1={pad.top}
+          y2={h - pad.bottom}
+          stroke="rgba(15,23,42,0.35)"
+          strokeWidth="1.25"
+        />
+        {path && (
+          <path d={path} fill="none" stroke="#e30613" strokeWidth="2.25" strokeLinejoin="round" />
+        )}
+        {drawn.map((p) => (
+          <circle key={p.x} cx={xAt(p.x)} cy={yAt(p.y)} r="3.5" fill="#e30613" />
+        ))}
+        <text x={10} y={16} className="cum-chart-axis">
           $M
         </text>
+        <text x={w / 2} y={h - 2} textAnchor="middle" className="cum-chart-axis">
+          Round
+        </text>
       </svg>
+    </div>
+  )
+}
+
+function ProfitCharts({
+  history,
+  numRounds,
+}: {
+  history: RunView['history']
+  numRounds: number
+}) {
+  const sorted = history.slice().sort((a, b) => a.round - b.round)
+  const annual: { x: number; y: number }[] = [{ x: 0, y: 0 }]
+  const cumulative: { x: number; y: number }[] = [{ x: 0, y: 0 }]
+
+  for (const h of sorted) {
+    annual.push({ x: h.round, y: h.profitM })
+    cumulative.push({ x: h.round, y: h.cumulativeProfitM })
+  }
+
+  const allY = [...annual, ...cumulative].map((p) => p.y)
+  const dataMin = Math.min(0, ...allY)
+  const dataMax = Math.max(0, ...allY)
+  const yMax = niceMax(Math.max(Math.abs(dataMax), Math.abs(dataMin), 1))
+  const yMin = dataMin < 0 ? -niceMax(Math.abs(dataMin)) : 0
+
+  return (
+    <div className="profit-charts">
+      <LineChart
+        title="Profit this round ($M)"
+        series={annual}
+        xMax={numRounds}
+        yMin={yMin}
+        yMax={yMax}
+      />
+      <LineChart
+        title="Cumulative profit ($M)"
+        series={cumulative}
+        xMax={numRounds}
+        yMin={yMin}
+        yMax={yMax}
+      />
     </div>
   )
 }
@@ -131,9 +222,9 @@ export function ResultTab({ run, onNext }: { run: RunView; onNext: () => void })
         )}
       </div>
 
-      <h3 className="section-label">Cumulative profit</h3>
-      <p className="page-help">Updates after every locked round.</p>
-      <CumulativeChart history={run.history} />
+      <h3 className="section-label">Round &amp; cumulative profit</h3>
+      <p className="page-help">Starts at Round 0 ($0). Updates after every locked round.</p>
+      <ProfitCharts history={run.history} numRounds={run.numRounds} />
 
       <h3 className="section-label">History</h3>
       <div className="table-wrap">

@@ -1064,18 +1064,27 @@ tr:last-child td {
   margin-bottom: 12px;
 }
 
-.cum-chart {
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  padding: 12px 8px 4px;
-  background: #fff;
+.profit-charts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
   margin-bottom: 18px;
 }
 
-.cum-chart-value {
-  font-size: 11px;
-  font-weight: 700;
-  fill: var(--text);
+.profit-chart-card {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px 8px 6px;
+  background: #fff;
+  min-width: 0;
+}
+
+.profit-chart-title {
+  margin: 0 0 4px;
+  padding: 0 6px;
+  font-size: 0.88rem;
+  font-weight: 650;
+  color: var(--text);
 }
 
 .cum-chart-label {
@@ -1087,6 +1096,12 @@ tr:last-child td {
 .cum-chart-axis {
   font-size: 10px;
   fill: var(--muted);
+}
+
+@media (max-width: 800px) {
+  .profit-charts {
+    grid-template-columns: 1fr;
+  }
 }
 
 .final-profit {
