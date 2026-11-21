@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { api, type RunView } from '../api'
 import { CountryInfoTab } from './play/CountryInfoTab'
@@ -37,6 +37,8 @@ export function Play() {
   const [tab, setTab] = useState<Tab>('country')
   const [error, setError] = useState('')
   const [alertOpen, setAlertOpen] = useState(false)
+  const alertedDeadline = useRef<string | null>(null)
+  const dismissingAlert = useRef(false)
 
   const refresh = useCallback(async () => {
     const r = await api.getRun(runId)
@@ -56,14 +58,22 @@ export function Play() {
     else if (run.phase === 'RESULT') setTab('result')
   }, [run?.status, run?.phase, run?.currentRound])
 
+  // Drop stale popup when a new round / deadline starts
+  useEffect(() => {
+    setAlertOpen(false)
+    dismissingAlert.current = false
+  }, [run?.currentRound, run?.roundDeadlineAt])
+
   const seconds = useCountdown(run?.roundDeadlineAt ?? null, !!run?.timerEnabled && run.phase !== 'RESULT')
 
   useEffect(() => {
-    if (!run?.timerEnabled || !run.roundDeadlineAt || run.alertShown || run.phase === 'RESULT') return
+    if (!run?.timerEnabled || !run.roundDeadlineAt || run.phase === 'RESULT') return
+    if (run.alertShown || dismissingAlert.current) return
+    if (alertedDeadline.current === run.roundDeadlineAt) return
     const threshold = Math.round((run.alertMinutes || 1) * 60)
-    if (seconds != null && seconds <= threshold && seconds > 0) {
-      setAlertOpen(true)
-    }
+    if (seconds == null || seconds <= 0 || seconds > threshold) return
+    alertedDeadline.current = run.roundDeadlineAt
+    setAlertOpen(true)
   }, [seconds, run])
 
   useEffect(() => {
@@ -229,7 +239,7 @@ export function Play() {
       )}
       {tab === 'glossary' && <GlossaryPage />}
 
-      {alertOpen && run.timerEnabled && !run.alertShown && (
+      {alertOpen && run.timerEnabled && run.phase !== 'RESULT' && (
         <div className="modal-backdrop">
           <div className="modal">
             <h3>{run.alertMinutes || 1} minute(s) left!</h3>
@@ -241,7 +251,10 @@ export function Play() {
               <button
                 className="btn btn-primary"
                 onClick={() => {
+                  dismissingAlert.current = true
+                  if (run.roundDeadlineAt) alertedDeadline.current = run.roundDeadlineAt
                   setAlertOpen(false)
+                  setRun((prev) => (prev ? { ...prev, alertShown: true } : prev))
                   void api.alertShown(runId).then(() => refresh())
                   if (run.phase === 'NEWS') setTab('decision')
                 }}

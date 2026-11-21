@@ -992,6 +992,31 @@ tr:last-child td {
   margin-bottom: 12px;
 }
 
+.cum-chart {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px 8px 4px;
+  background: #fff;
+  margin-bottom: 18px;
+}
+
+.cum-chart-value {
+  font-size: 11px;
+  font-weight: 700;
+  fill: var(--text);
+}
+
+.cum-chart-label {
+  font-size: 11px;
+  fill: var(--muted);
+  font-weight: 600;
+}
+
+.cum-chart-axis {
+  font-size: 10px;
+  fill: var(--muted);
+}
+
 .final-profit {
   font-size: 1.6rem;
   font-weight: 700;
