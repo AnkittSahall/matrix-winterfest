@@ -243,7 +243,7 @@ export function Admin() {
           onClick={() => {
             if (
               !window.confirm(
-                'Clear the live leaderboard for this heat? Team runs stay saved.',
+                'Clear revealed rounds on the live board? Teams stay — you can reveal again from Round 1.',
               )
             ) {
               return

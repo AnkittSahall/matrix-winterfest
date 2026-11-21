@@ -32,6 +32,10 @@ export function truncateName(name, max = 28) {
   return `${s.slice(0, max - 1)}…`
 }
 
+function runKey(run) {
+  return String(run?.runId || run?.id || '')
+}
+
 /**
  * Rank by total of revealed round profits (desc).
  * Tie-break: higher latest-revealed-round profit, then earlier lockedAt of that round.
@@ -43,6 +47,7 @@ export function rankLiveTeams(runs, revealedRound, prevRanks = {}, numRounds = 6
   )
 
   const rows = players.map((r) => {
+    const id = runKey(r)
     const history = Array.isArray(r.history) ? r.history : []
     const byRound = new Map(history.map((h) => [h.round, h]))
     const roundProfits = []
@@ -56,16 +61,22 @@ export function rankLiveTeams(runs, revealedRound, prevRanks = {}, numRounds = 6
         continue
       }
       const h = byRound.get(round)
-      const profit = h ? Number(h.profitM) || 0 : 0
+      if (!h) {
+        // Revealed round but this team never locked it — show dash via null, count as 0 for total
+        roundProfits.push(null)
+        continue
+      }
+      const profit = Number(h.profitM) || 0
       roundProfits.push(Math.round((profit + Number.EPSILON) * 100) / 100)
       totalProfit += profit
       if (round === revealedRound) {
         latestRevealedProfit = profit
-        latestLockedAt = h?.lockedAt || null
+        latestLockedAt = h.lockedAt || null
       }
     }
 
     return {
+      id,
       companyName: r.companyName,
       displayName: truncateName(r.companyName),
       roundProfits,
@@ -84,8 +95,15 @@ export function rankLiveTeams(runs, revealedRound, prevRanks = {}, numRounds = 6
     const aT = a.latestLockedAt ? new Date(a.latestLockedAt).getTime() : Number.POSITIVE_INFINITY
     const bT = b.latestLockedAt ? new Date(b.latestLockedAt).getTime() : Number.POSITIVE_INFINITY
     if (aT !== bT) return aT - bT
-    return String(a.companyName).localeCompare(String(b.companyName))
+    return String(a.companyName).localeCompare(String(b.companyName)) || String(a.id).localeCompare(String(b.id))
   })
+
+  // Disambiguate duplicate company names for display
+  const nameCount = {}
+  for (const row of rows) {
+    nameCount[row.companyName] = (nameCount[row.companyName] || 0) + 1
+  }
+  const nameSeen = {}
 
   const out = []
   let currentRank = 0
@@ -98,11 +116,20 @@ export function rankLiveTeams(runs, revealedRound, prevRanks = {}, numRounds = 6
       (row.latestLockedAt || '') === (rows[i - 1].latestLockedAt || '')
     if (!tied) currentRank = i + 1
 
+    let display = row.displayName
+    if (nameCount[row.companyName] > 1) {
+      nameSeen[row.companyName] = (nameSeen[row.companyName] || 0) + 1
+      display = truncateName(`${row.companyName} (${nameSeen[row.companyName]})`)
+    }
+
     const team = {
-      companyName: row.displayName,
+      id: row.id || `row-${i}`,
+      companyName: display,
       fullName: row.companyName,
       rank: currentRank,
-      prevRank: prevRanks[row.companyName] ?? null,
+      prevRank: (row.id && prevRanks[row.id] != null ? prevRanks[row.id] : null) ??
+        prevRanks[row.companyName] ??
+        null,
       roundProfits: row.roundProfits,
       totalProfit: row.totalProfit,
     }
@@ -155,13 +182,17 @@ export function hasLockedRound(run, round) {
 export function ranksMapFromTeams(teams) {
   const map = {}
   for (const t of teams || []) {
-    const key = t.fullName || t.companyName
+    const key = t.id || t.fullName || t.companyName
     map[key] = t.rank
   }
   return map
 }
 
-/** Public live payload — never includes factors, scenarios, allocations, or run ids. */
+/**
+ * Public live payload.
+ * Never includes factors, scenarios, or allocations.
+ * Includes opaque team `id` (run id) so duplicate names stay stable in the UI.
+ */
 export function buildLivePayload({ config, liveBoard, runs, recentSubmitters = [] }) {
   const board = normalizeLiveBoard(liveBoard)
   const numRounds = Number(config?.numRounds) || 6
@@ -169,11 +200,8 @@ export function buildLivePayload({ config, liveBoard, runs, recentSubmitters = [
   const startBudgetM = Number(config?.startBudgetM) || 100
   const revealedRound = Math.min(Math.max(0, board.revealedRound), numRounds)
 
-  const resetAtMs = board.resetAt ? new Date(board.resetAt).getTime() : 0
-  const eventRuns = (runs || []).filter((r) => {
-    if (resetAtMs && r.createdAt && new Date(r.createdAt).getTime() < resetAtMs) return false
-    return true
-  })
+  // All runs in the active competition (reset only clears reveal state, not teams)
+  const eventRuns = runs || []
 
   const active = eventRuns.filter((r) => r.status === 'IN_PROGRESS' || r.status === 'COMPLETED')
   const lobby = eventRuns.filter(
@@ -196,8 +224,18 @@ export function buildLivePayload({ config, liveBoard, runs, recentSubmitters = [
   } else if (revealedRound >= numRounds) {
     statusLabel = 'Final results'
     progressRound = numRounds
+  } else if (revealedRound > 0) {
+    statusLabel = `Round ${revealedRound} revealed`
+    // still track next round submissions
+    progressRound = Math.min(revealedRound + 1, numRounds)
+    const allLocked = active.every((r) => hasLockedRound(r, progressRound))
+    if (progressRound > revealedRound) {
+      statusLabel = allLocked
+        ? `Round ${progressRound} ready to reveal`
+        : `Round ${progressRound} in progress`
+    }
   } else {
-    const next = revealedRound + 1
+    const next = 1
     progressRound = next
     const allLocked = active.every((r) => hasLockedRound(r, next))
     statusLabel = allLocked ? `Round ${next} ready to reveal` : `Round ${next} in progress`

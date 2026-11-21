@@ -8,6 +8,7 @@ export type LiveHighlight = {
 } | null
 
 export type LiveTeam = {
+  id: string
   companyName: string
   rank: number
   prevRank: number | null

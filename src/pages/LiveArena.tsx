@@ -122,7 +122,7 @@ export function LiveArena() {
               const label = idx === 0 ? '1ST' : idx === 1 ? '2ND' : '3RD'
               if (!t) return <div key={place} className={`live-podium-card ${place}`} />
               return (
-                <div key={t.companyName + place} className={`live-podium-card ${place}`}>
+                <div key={`${t.id}-${place}`} className={`live-podium-card ${place}`}>
                   {idx === 0 && <div className="crown">★</div>}
                   <div className="place">{label}</div>
                   <div className="name">{t.companyName}</div>
@@ -147,8 +147,8 @@ export function LiveArena() {
               <div className="live-empty-panel">
                 <h2>{state!.progress.lobbyNames.length} teams ready</h2>
                 <div className="live-lobby-chips">
-                  {state!.progress.lobbyNames.map((n) => (
-                    <span key={n}>{n}</span>
+                  {state!.progress.lobbyNames.map((n, i) => (
+                    <span key={`${n}-${i}`}>{n}</span>
                   ))}
                 </div>
               </div>
@@ -170,7 +170,7 @@ export function LiveArena() {
                   {teams.map((t) => {
                     const delta = rankDelta(t)
                     return (
-                      <tr key={t.companyName} className={t.rank === 1 ? 'rank-1' : ''}>
+                      <tr key={t.id || t.companyName} className={t.rank === 1 ? 'rank-1' : ''}>
                         <td className="mono">#{t.rank}</td>
                         <td className="company">{t.companyName}</td>
                         {Array.from({ length: numRounds }, (_, i) => {

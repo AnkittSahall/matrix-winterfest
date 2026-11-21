@@ -180,6 +180,7 @@ export type LiveStatePayload = {
     lobbyNames: string[]
   }
   teams: {
+    id: string
     companyName: string
     rank: number
     prevRank: number | null

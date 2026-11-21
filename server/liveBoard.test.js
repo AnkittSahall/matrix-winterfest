@@ -20,7 +20,8 @@ describe('truncateName', () => {
 })
 
 describe('rankLiveTeams', () => {
-  const mk = (name, profits, lockedAts = [], status = 'IN_PROGRESS', pool = 100) => ({
+  const mk = (name, profits, lockedAts = [], status = 'IN_PROGRESS', pool = 100, runId) => ({
+    runId: runId || `run-${name}`,
     companyName: name,
     status,
     currentPoolM: pool,
@@ -93,9 +94,25 @@ describe('rankLiveTeams', () => {
     assert.equal(b[0].poolM, 105.5)
   })
 
-  it('exposes prevRank from lastRanks', () => {
-    const teams = rankLiveTeams([mk('A', [1])], 1, { A: 3 }, 2, 'A')
+  it('exposes prevRank from lastRanks by run id', () => {
+    const teams = rankLiveTeams([mk('A', [1], [], 'IN_PROGRESS', 100, 'id-a')], 1, { 'id-a': 3 }, 2, 'A')
     assert.equal(teams[0].prevRank, 3)
+  })
+
+  it('keeps duplicate company names as separate ranked rows', () => {
+    const teams = rankLiveTeams(
+      [mk('kk', [10], [], 'IN_PROGRESS', 100, 'r1'), mk('kk', [5], [], 'IN_PROGRESS', 100, 'r2')],
+      1,
+      {},
+      2,
+      'A',
+    )
+    assert.equal(teams.length, 2)
+    assert.equal(teams[0].rank, 1)
+    assert.equal(teams[1].rank, 2)
+    assert.notEqual(teams[0].id, teams[1].id)
+    assert.ok(teams[0].companyName.includes('kk'))
+    assert.ok(teams[1].companyName.includes('kk'))
   })
 })
 
@@ -134,26 +151,29 @@ describe('buildLivePayload', () => {
     assert.equal(pub.progress.submitted, 0)
   })
 
-  it('respects resetAt filter', () => {
+  it('reset does not hide existing competition teams', () => {
     const payload = buildLivePayload({
       config: { numRounds: 2, budgetMode: 'A', startBudgetM: 100 },
-      liveBoard: { revealedRound: 0, resetAt: '2026-06-01T00:00:00.000Z' },
+      liveBoard: { revealedRound: 1, resetAt: null },
       runs: [
         {
+          runId: 'old-1',
           companyName: 'Old',
           status: 'IN_PROGRESS',
           createdAt: '2026-01-01T00:00:00.000Z',
           history: [{ round: 1, profitM: 9, lockedAt: '2026-01-01T01:00:00.000Z' }],
         },
         {
+          runId: 'new-1',
           companyName: 'New',
           status: 'IN_PROGRESS',
           createdAt: '2026-07-01T00:00:00.000Z',
-          history: [],
+          history: [{ round: 1, profitM: 2, lockedAt: '2026-07-01T01:00:00.000Z' }],
         },
       ],
     })
-    assert.equal(payload.progress.total, 1)
-    assert.deepEqual(payload.progress.lobbyNames, ['New'])
+    assert.equal(payload.progress.total, 2)
+    assert.equal(payload.teams[0].companyName, 'Old')
+    assert.equal(payload.teams[0].totalProfit, 9)
   })
 })

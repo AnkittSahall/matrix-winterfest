@@ -190,11 +190,7 @@ async function maybeAutoReveal(roundHint) {
   const next = board.revealedRound + 1
   const target = roundHint && roundHint === next ? next : next
   const runs = await listCompetitionRuns(meta.competitionId)
-  const resetAtMs = board.resetAt ? new Date(board.resetAt).getTime() : 0
-  const active = runs.filter((r) => {
-    if (resetAtMs && r.createdAt && new Date(r.createdAt).getTime() < resetAtMs) return false
-    return r.status === 'IN_PROGRESS' || r.status === 'COMPLETED'
-  })
+  const active = runs.filter((r) => r.status === 'IN_PROGRESS' || r.status === 'COMPLETED')
   if (!active.length) return board
   if (!active.every((r) => hasLockedRound(r, target))) return board
 
@@ -235,10 +231,8 @@ async function adminRevealRound(round) {
   }
 
   const runs = await listCompetitionRuns(meta.competitionId)
-  const resetAtMs = board.resetAt ? new Date(board.resetAt).getTime() : 0
   const active = []
   for (const run of runs) {
-    if (resetAtMs && run.createdAt && new Date(run.createdAt).getTime() < resetAtMs) continue
     if (run.status !== 'IN_PROGRESS' && run.status !== 'COMPLETED') continue
     let next = run
     if (!hasLockedRound(next, r)) {
@@ -971,11 +965,7 @@ app.get(
     const board = await readLiveBoard()
     const payload = publicLivePayload(await computeLivePayload())
     const runs = await listCompetitionRuns(meta.competitionId)
-    const resetAtMs = board.resetAt ? new Date(board.resetAt).getTime() : 0
-    const active = runs.filter((r) => {
-      if (resetAtMs && r.createdAt && new Date(r.createdAt).getTime() < resetAtMs) return false
-      return r.status === 'IN_PROGRESS' || r.status === 'COMPLETED'
-    })
+    const active = runs.filter((r) => r.status === 'IN_PROGRESS' || r.status === 'COMPLETED')
     const rounds = []
     for (let i = 1; i <= (meta.config.numRounds || 6); i++) {
       const submitted = active.filter((r) => hasLockedRound(r, i)).length
@@ -1038,8 +1028,10 @@ app.post(
   '/api/admin/live/reset',
   requireAdmin,
   asyncHandler(async (_req, res) => {
+    // Soft reset: clear reveal / ranks only. Existing teams stay on the board.
+    // Full heat wipe = Reset competition.
     const board = defaultLiveBoard()
-    board.resetAt = new Date().toISOString()
+    board.resetAt = null
     clearRecentSubmitters()
     await writeLiveBoard(board)
     const payload = await publishLive()
