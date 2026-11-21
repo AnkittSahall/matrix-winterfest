@@ -160,7 +160,32 @@ export function Admin() {
         >
           Download Excel (.csv)
         </button>
+        <button
+          className="btn btn-secondary"
+          onClick={() => {
+            if (
+              !window.confirm(
+                'Reset competition? Current teams disappear from the board (archived). New teams start fresh.',
+              )
+            ) {
+              return
+            }
+            void api
+              .resetCompetition()
+              .then(async (r) => {
+                setSummary(`New competition started (${r.competitionId.slice(0, 8)}…)`)
+                setResults([])
+                await load()
+              })
+              .catch((e) => setError(e instanceof Error ? e.message : 'Reset failed'))
+          }}
+        >
+          Reset competition
+        </button>
       </div>
+      {cfg.competitionId && (
+        <p className="page-help mono">Active competition: {cfg.competitionId}</p>
+      )}
       {results.length === 0 ? (
         <div className="empty">No completed runs yet. Results appear when a team finishes all rounds.</div>
       ) : (

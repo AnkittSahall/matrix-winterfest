@@ -101,9 +101,17 @@ export const api = {
       body: JSON.stringify(body),
     }),
   adminResults: () =>
-    req<{ generatedAt: string; count: number; results: AdminResultRow[] }>(
-      '/api/admin/results',
-    ),
+    req<{
+      generatedAt: string
+      competitionId?: string
+      count: number
+      results: AdminResultRow[]
+    }>('/api/admin/results'),
+  resetCompetition: () =>
+    req<{ ok: boolean; competitionId: string }>('/api/admin/reset-competition', {
+      method: 'POST',
+      body: '{}',
+    }),
 }
 
 export type AdminResultRow = {
@@ -153,4 +161,5 @@ export type AdminConfig = {
   alertMinutes: number
   scenarios: { scenarioId: number; title: string }[]
   version?: number
+  competitionId?: string
 }

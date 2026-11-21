@@ -6,13 +6,14 @@
   "scripts": {
     "dev": "concurrently -k \"npm:server\" \"npm:client\"",
     "client": "vite",
-    "server": "node server/index.js",
+    "server": "node --env-file=.env server/index.js",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "preview": "vite preview",
-    "start": "node server/index.js"
+    "start": "node --env-file=.env server/index.js"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.119.2",
     "concurrently": "^10.0.7",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",

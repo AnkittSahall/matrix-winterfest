@@ -27,3 +27,5 @@ server/store/db.json
 *.njsproj
 *.sln
 *.sw?
+
+.vercel
