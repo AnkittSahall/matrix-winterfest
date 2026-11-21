@@ -331,7 +331,7 @@ async function lazyAutoLock(run, competitionId) {
   run.phase = 'RESULT'
   run.roundDeadlineAt = null
   await persistRun(run, competitionId)
-  void maybeAutoReveal(run.currentRound).then(() => publishLive())
+  void maybeAutoReveal(run.currentRound)
   return run
 }
 
@@ -866,7 +866,7 @@ app.post(
     run.roundDeadlineAt = null
     await persistRun(run)
     pushRecentSubmitter(run.companyName)
-    void maybeAutoReveal(run.currentRound).then(() => publishLive())
+    void maybeAutoReveal(run.currentRound)
     res.json(playerRunView(run))
   }),
 )
@@ -927,7 +927,7 @@ app.get(
   '/api/live/state',
   liveRateLimit,
   asyncHandler(async (_req, res) => {
-    await maybeAutoReveal()
+    // Read-only: no auto-reveal writes here (keeps DB light). Reveal on lock or admin.
     const payload = publicLivePayload(await computeLivePayload())
     res.json(payload)
   }),

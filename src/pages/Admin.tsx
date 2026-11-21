@@ -225,8 +225,8 @@ export function Admin() {
 
       <h3 className="section-label">Live Result Screen</h3>
       <p className="page-help">
-        Open MatriX Arena on a projector. Press F11 or use Fullscreen on the live page. Click once
-        on the live screen to enable sound.
+        Projector leaderboard. Open it, then reveal each round when teams are done. Press F11 for
+        fullscreen.
       </p>
       <div className="actions-row">
         <a className="btn btn-primary" href="/live" target="_blank" rel="noreferrer">
@@ -236,28 +236,14 @@ export function Admin() {
           className="btn btn-secondary"
           onClick={() => void loadLive().catch((e) => setError(e.message))}
         >
-          Refresh live status
-        </button>
-        <button
-          className="btn btn-secondary"
-          onClick={() =>
-            void api
-              .adminLivePodium()
-              .then(async () => {
-                setSummary('Champion / podium flagged on live screen.')
-                await loadLive()
-              })
-              .catch((e) => setError(e instanceof Error ? e.message : 'Failed'))
-          }
-        >
-          Show podium
+          Refresh
         </button>
         <button
           className="btn btn-secondary"
           onClick={() => {
             if (
               !window.confirm(
-                'This clears the leaderboard for the current event. Team data is archived, not deleted.',
+                'Clear the live leaderboard for this heat? Team runs stay saved.',
               )
             ) {
               return
@@ -265,7 +251,7 @@ export function Admin() {
             void api
               .adminLiveReset()
               .then(async () => {
-                setSummary('Live board reset. Only new joins after this count.')
+                setSummary('Live board cleared.')
                 await loadLive()
               })
               .catch((e) => setError(e instanceof Error ? e.message : 'Reset failed'))
@@ -276,54 +262,24 @@ export function Admin() {
       </div>
 
       {liveBoard && (
-        <div className="list" style={{ marginTop: 12, marginBottom: 12 }}>
-          <label style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-            <input
-              type="checkbox"
-              checked={liveBoard.registrationLocked}
-              onChange={(e) =>
-                void api
-                  .adminLiveSettings({ registrationLocked: e.target.checked })
-                  .then(async (r) => {
-                    setLiveBoard(r.board)
-                    setSummary(
-                      e.target.checked
-                        ? 'New teams locked.'
-                        : 'New teams can join again (if Activate is on).',
-                    )
-                  })
-                  .catch((err) => setError(err instanceof Error ? err.message : 'Failed'))
-              }
-            />
-            Lock new teams
-          </label>
-          <label style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-            <input
-              type="checkbox"
-              checked={liveBoard.soundOn}
-              onChange={(e) =>
-                void api
-                  .adminLiveSettings({ soundOn: e.target.checked })
-                  .then((r) => setLiveBoard(r.board))
-                  .catch((err) => setError(err instanceof Error ? err.message : 'Failed'))
-              }
-            />
-            Sound effects on live screen
-          </label>
-          <label style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-            <input
-              type="checkbox"
-              checked={liveBoard.showTicker}
-              onChange={(e) =>
-                void api
-                  .adminLiveSettings({ showTicker: e.target.checked })
-                  .then((r) => setLiveBoard(r.board))
-                  .catch((err) => setError(err instanceof Error ? err.message : 'Failed'))
-              }
-            />
-            Show submitted team names ticker
-          </label>
-        </div>
+        <label
+          style={{ display: 'flex', gap: 8, alignItems: 'center', margin: '12px 0' }}
+        >
+          <input
+            type="checkbox"
+            checked={liveBoard.registrationLocked}
+            onChange={(e) =>
+              void api
+                .adminLiveSettings({ registrationLocked: e.target.checked })
+                .then(async (r) => {
+                  setLiveBoard(r.board)
+                  setSummary(e.target.checked ? 'New teams locked.' : 'New teams unlocked.')
+                })
+                .catch((err) => setError(err instanceof Error ? err.message : 'Failed'))
+            }
+          />
+          Lock new teams
+        </label>
       )}
 
       <div className="table-wrap" style={{ marginBottom: 18 }}>
@@ -331,7 +287,7 @@ export function Admin() {
           <thead>
             <tr>
               <th>Round</th>
-              <th>Status</th>
+              <th>Submitted</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -346,10 +302,14 @@ export function Admin() {
                   <td>
                     <strong>Round {r.round}</strong>
                   </td>
-                  <td>{r.status}</td>
+                  <td>
+                    {r.revealed
+                      ? 'Revealed'
+                      : `${r.submitted} / ${r.total} teams`}
+                  </td>
                   <td>
                     {r.revealed ? (
-                      <span style={{ color: 'var(--muted)' }}>Revealed</span>
+                      <span style={{ color: 'var(--muted)' }}>Done</span>
                     ) : (
                       <button
                         className="btn btn-primary"
@@ -358,7 +318,7 @@ export function Admin() {
                           void api
                             .adminLiveReveal(r.round)
                             .then(async () => {
-                              setSummary(`Round ${r.round} revealed on live screen.`)
+                              setSummary(`Round ${r.round} shown on live board.`)
                               await loadLive()
                             })
                             .catch((e) =>
@@ -376,7 +336,7 @@ export function Admin() {
             {liveRounds.length === 0 && (
               <tr>
                 <td colSpan={3} style={{ color: 'var(--muted)' }}>
-                  Load live status after login.
+                  No rounds yet.
                 </td>
               </tr>
             )}
