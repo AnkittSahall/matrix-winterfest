@@ -927,6 +927,7 @@ app.get(
   '/api/live/state',
   liveRateLimit,
   asyncHandler(async (_req, res) => {
+    await maybeAutoReveal()
     const payload = publicLivePayload(await computeLivePayload())
     res.json(payload)
   }),
