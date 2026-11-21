@@ -139,34 +139,20 @@ export function Play() {
             </div>
           </div>
           <div className="status-line">
-            <span>
+            <span className="status-chip">
               Budget <b>{money(run.currentPoolM)}</b>
             </span>
-            <span className="sep">|</span>
-            <span>
-              {started ? (
-                <>
-                  Round <b>
-                    {run.currentRound}/{run.numRounds}
-                  </b>
-                </>
-              ) : (
-                <>
-                  Round <b>Not started</b>
-                </>
-              )}
+            <span className="status-chip">
+              Round{' '}
+              <b>{started ? `${run.currentRound}/${run.numRounds}` : '—'}</b>
             </span>
-            <span className="sep">|</span>
-            <span>
+            <span className="status-chip">
               Profit <b>{money(run.cumulativeProfitM)}</b>
             </span>
             {mm && (
-              <>
-                <span className="sep">|</span>
-                <span className={timerRed ? 'timer-red' : ''}>
-                  Time <b>{mm}</b>
-                </span>
-              </>
+              <span className={`status-chip${timerRed ? ' status-chip-timer' : ''}`}>
+                Time <b>{mm}</b>
+              </span>
             )}
             {!started && (
               <button className="btn btn-primary" onClick={() => void start()}>

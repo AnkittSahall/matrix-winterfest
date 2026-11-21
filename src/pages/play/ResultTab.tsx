@@ -116,7 +116,7 @@ function LineChart({
           $M
         </text>
         <text x={w / 2} y={h - 2} textAnchor="middle" className="cum-chart-axis">
-          Round
+          Round (0 = start)
         </text>
       </svg>
     </div>
@@ -270,7 +270,6 @@ export function ResultTab({ run, onNext }: { run: RunView; onNext: () => void })
   return (
     <div>
       <h2 className="page-title">Round {latest.round} result</h2>
-      <p className="page-help">Round summary, charts, and profit by country.</p>
 
       <div className="result-card">
         <div className="stats-plain" style={{ border: 'none', margin: 0, padding: 0 }}>
@@ -317,15 +316,10 @@ export function ResultTab({ run, onNext }: { run: RunView; onNext: () => void })
         )}
       </div>
 
-      <h3 className="section-label">Round &amp; cumulative profit ($)</h3>
-      <p className="page-help">Starts at Round 0 ($0). Axis goes through all rounds.</p>
+      <h3 className="section-label">Profit charts</h3>
       <ProfitCharts history={run.history} numRounds={run.numRounds} />
 
-      <h3 className="section-label">Profit by country ($M)</h3>
-      <p className="page-help">
-        Each column is that round’s profit from the money you put in that country. Future rounds
-        show — until you play them.
-      </p>
+      <h3 className="section-label">Profit by country</h3>
       <ProfitByCountry history={run.history} numRounds={run.numRounds} names={names} />
 
       <h3 className="section-label">History</h3>

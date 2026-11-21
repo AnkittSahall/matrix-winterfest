@@ -92,18 +92,11 @@ p {
   position: sticky;
   top: 0;
   z-index: 40;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.94) 0%,
-    rgba(253, 235, 236, 0.88) 100%
-  );
-  backdrop-filter: blur(14px) saturate(1.2);
-  border-bottom: 1px solid rgba(227, 6, 19, 0.18);
+  background: #fff;
+  border-bottom: 1px solid var(--line);
   padding: 12px 0 0;
   margin-bottom: 18px;
-  box-shadow:
-    0 10px 28px rgba(227, 6, 19, 0.08),
-    0 1px 0 rgba(255, 255, 255, 0.7) inset;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.05);
 }
 
 .play-body {
@@ -152,41 +145,55 @@ p {
 .status-line {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
-  gap: 10px 14px;
-  color: rgba(26, 29, 36, 0.72);
-  font-size: 0.8rem;
-  font-weight: 650;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
+  align-items: stretch;
+  gap: 8px;
   margin-left: auto;
-  padding: 11px 16px;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.72) 0%,
-    rgba(253, 235, 236, 0.55) 55%,
-    rgba(255, 255, 255, 0.45) 100%
-  );
-  border: 1px solid rgba(227, 6, 19, 0.28);
-  border-radius: 999px;
-  box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.55) inset,
-    0 8px 22px rgba(227, 6, 19, 0.12);
-  backdrop-filter: blur(10px);
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
 }
 
-.status-line b {
-  color: var(--text);
-  font-weight: 750;
+.status-chip {
+  display: grid;
+  gap: 2px;
+  min-width: 88px;
+  padding: 8px 12px;
+  background: #111827;
+  color: rgba(255, 255, 255, 0.7);
+  border-radius: 10px;
+  font-size: 0.68rem;
+  font-weight: 650;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.status-chip b {
+  color: #fff;
+  font-weight: 700;
   font-family: var(--mono);
-  font-size: 0.98rem;
+  font-size: 0.95rem;
   text-transform: none;
   letter-spacing: 0;
 }
 
+.status-chip-timer {
+  background: var(--red);
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.status-chip-timer b {
+  color: #fff;
+}
+
+.status-line .sep {
+  display: none;
+}
+
 .status-line .timer-red,
 .status-line .timer-red b {
-  color: var(--red);
+  color: #fff;
 }
 
 .status-line .sep {
@@ -595,17 +602,10 @@ tr:last-child td {
   z-index: 35;
   margin-top: 8px;
   padding: 12px 14px calc(12px + env(safe-area-inset-bottom, 0px));
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.92) 0%,
-    rgba(253, 235, 236, 0.82) 100%
-  );
-  backdrop-filter: blur(14px) saturate(1.15);
-  border: 1px solid rgba(227, 6, 19, 0.22);
-  border-radius: 16px 16px 0 0;
-  box-shadow:
-    0 -12px 30px rgba(227, 6, 19, 0.1),
-    0 1px 0 rgba(255, 255, 255, 0.75) inset;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 14px 14px 0 0;
+  box-shadow: 0 -10px 28px rgba(15, 23, 42, 0.08);
   display: flex;
   flex-wrap: wrap;
   align-items: center;
