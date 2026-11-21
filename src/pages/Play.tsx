@@ -37,6 +37,8 @@ export function Play() {
   const [tab, setTab] = useState<Tab>('country')
   const [error, setError] = useState('')
   const [alertOpen, setAlertOpen] = useState(false)
+  const [alertBusy, setAlertBusy] = useState(false)
+  const [startBusy, setStartBusy] = useState(false)
   const alertedDeadline = useRef<string | null>(null)
   const dismissingAlert = useRef(false)
 
@@ -120,9 +122,15 @@ export function Play() {
   }
 
   const start = async () => {
-    const r = await api.start(runId)
-    setRun(r)
-    setTab('news')
+    if (startBusy) return
+    setStartBusy(true)
+    try {
+      const r = await api.start(runId)
+      setRun(r)
+      setTab('news')
+    } finally {
+      setStartBusy(false)
+    }
   }
 
   return (
@@ -155,8 +163,12 @@ export function Play() {
               </span>
             )}
             {!started && (
-              <button className="btn btn-primary" onClick={() => void start()}>
-                Start
+              <button
+                className={`btn btn-primary${startBusy ? ' is-busy' : ''}`}
+                disabled={startBusy}
+                onClick={() => void start()}
+              >
+                {startBusy ? 'Starting…' : 'Start'}
               </button>
             )}
           </div>
@@ -243,15 +255,21 @@ export function Play() {
             </p>
             <div className="footer-actions">
               <button
-                className="btn btn-primary"
+                className={`btn btn-primary${alertBusy ? ' is-busy' : ''}`}
+                disabled={alertBusy}
                 onClick={() => {
+                  if (alertBusy) return
+                  setAlertBusy(true)
                   void (async () => {
                     dismissingAlert.current = true
                     if (run.roundDeadlineAt) alertedDeadline.current = run.roundDeadlineAt
-                    setAlertOpen(false)
                     setRun((prev) => (prev ? { ...prev, alertShown: true } : prev))
                     void api.alertShown(runId).then(() => refresh())
-                    if (tab === 'decision') return
+                    if (tab === 'decision') {
+                      setAlertOpen(false)
+                      setAlertBusy(false)
+                      return
+                    }
                     try {
                       if (run.phase === 'NEWS') {
                         const r = await api.toDecision(runId)
@@ -261,10 +279,16 @@ export function Play() {
                       /* still jump to Decision UI */
                     }
                     setTab('decision')
+                    setAlertOpen(false)
+                    setAlertBusy(false)
                   })()
                 }}
               >
-                {tab === 'decision' ? 'OK, continue' : 'Go to Decision'}
+                {alertBusy
+                  ? 'Opening…'
+                  : tab === 'decision'
+                    ? 'OK, continue'
+                    : 'Go to Decision'}
               </button>
             </div>
           </div>

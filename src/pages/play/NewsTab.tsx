@@ -8,13 +8,14 @@ export function NewsTab({
 }: {
   runId: string
   round: number
-  onGoDecision: () => void
+  onGoDecision: () => void | Promise<void>
 }) {
   const [title, setTitle] = useState('')
   const [numRounds, setNumRounds] = useState(6)
   const [items, setItems] = useState<{ order: number; headline: string; body: string }[]>([])
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(true)
+  const [busy, setBusy] = useState(false)
 
   useEffect(() => {
     let alive = true
@@ -60,8 +61,16 @@ export function NewsTab({
       </div>
 
       <div className="footer-actions">
-        <button className="btn btn-primary" onClick={onGoDecision}>
-          Go to Decision
+        <button
+          className={`btn btn-primary${busy ? ' is-busy' : ''}`}
+          disabled={busy}
+          onClick={() => {
+            if (busy) return
+            setBusy(true)
+            void Promise.resolve(onGoDecision()).catch(() => setBusy(false))
+          }}
+        >
+          {busy ? 'Opening…' : 'Go to Decision'}
         </button>
       </div>
     </div>

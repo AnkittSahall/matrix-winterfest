@@ -282,11 +282,11 @@ export function DecisionTab({
               </button>
             )}
             <button
-              className="btn btn-primary"
+              className={`btn btn-primary${busy ? ' is-busy' : ''}`}
               disabled={!canLock || busy}
               onClick={() => setConfirm(true)}
             >
-              Lock Round {run.currentRound}
+              {busy ? 'Locking…' : `Lock Round ${run.currentRound}`}
             </button>
           </div>
         )}
@@ -306,11 +306,19 @@ export function DecisionTab({
               </p>
             )}
             <div className="footer-actions">
-              <button className="btn btn-secondary" onClick={() => setConfirm(false)}>
+              <button
+                className="btn btn-secondary"
+                disabled={busy}
+                onClick={() => setConfirm(false)}
+              >
                 Cancel
               </button>
-              <button className="btn btn-primary" disabled={busy} onClick={() => void lock()}>
-                Confirm lock
+              <button
+                className={`btn btn-primary${busy ? ' is-busy' : ''}`}
+                disabled={busy}
+                onClick={() => void lock()}
+              >
+                {busy ? 'Locking…' : 'Confirm lock'}
               </button>
             </div>
           </div>

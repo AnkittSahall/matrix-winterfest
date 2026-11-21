@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
 import { api, type Country, type EntryMode } from '../../api'
 
-export function CountryInfoTab({ onStart }: { onStart?: () => void }) {
+export function CountryInfoTab({ onStart }: { onStart?: () => void | Promise<void> }) {
   const [countries, setCountries] = useState<Country[]>([])
   const [home, setHome] = useState<Record<string, unknown> | null>(null)
   const [modes, setModes] = useState<EntryMode[]>([])
+  const [busy, setBusy] = useState(false)
 
   useEffect(() => {
     void Promise.all([api.countries(), api.entryModes()]).then(([c, m]) => {
@@ -29,8 +30,16 @@ export function CountryInfoTab({ onStart }: { onStart?: () => void }) {
 
       {onStart && (
         <div className="actions-row">
-          <button className="btn btn-primary" onClick={onStart}>
-            Start Round 1
+          <button
+            className={`btn btn-primary${busy ? ' is-busy' : ''}`}
+            disabled={busy}
+            onClick={() => {
+              if (busy) return
+              setBusy(true)
+              void Promise.resolve(onStart()).catch(() => setBusy(false))
+            }}
+          >
+            {busy ? 'Starting…' : 'Start Round 1'}
           </button>
         </div>
       )}

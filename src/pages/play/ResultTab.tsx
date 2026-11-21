@@ -249,9 +249,10 @@ function ProfitByCountry({
   )
 }
 
-export function ResultTab({ run, onNext }: { run: RunView; onNext: () => void }) {
+export function ResultTab({ run, onNext }: { run: RunView; onNext: () => void | Promise<void> }) {
   const latest = run.history.find((h) => h.round === run.currentRound) || run.history.at(-1)
   const [names, setNames] = useState<Record<string, string>>({})
+  const [busy, setBusy] = useState(false)
 
   useEffect(() => {
     void api.countries().then((c) => {
@@ -358,8 +359,20 @@ export function ResultTab({ run, onNext }: { run: RunView; onNext: () => void })
       </div>
 
       <div className="footer-actions">
-        <button className="btn btn-primary btn-lg" onClick={onNext}>
-          {last ? 'View Final Result' : `Continue to Round ${run.currentRound + 1}`}
+        <button
+          className={`btn btn-primary btn-lg${busy ? ' is-busy' : ''}`}
+          disabled={busy}
+          onClick={() => {
+            if (busy) return
+            setBusy(true)
+            void Promise.resolve(onNext()).catch(() => setBusy(false))
+          }}
+        >
+          {busy
+            ? 'Loading…'
+            : last
+              ? 'View Final Result'
+              : `Continue to Round ${run.currentRound + 1}`}
         </button>
       </div>
     </div>
