@@ -1,32 +1,32 @@
 [
- {
-  "code": "FRANCHISING",
-  "name": "Franchising",
-  "outletsOnEntry": 25,
-  "entryCostUsd": 250000,
-  "outletCostToYouUsd": 500000,
-  "revenueModel": "One-off franchise fee $20,000 per outlet plus royalty of 6% of annual revenue",
-  "ongoingCost": "Support and supervision $12,500 per outlet per year",
-  "notes": "Can oblige franchisees to source ingredients from you"
- },
- {
-  "code": "JOINT_VENTURE",
-  "name": "Joint Venture",
-  "outletsOnEntry": 5,
-  "entryCostUsd": 250000,
-  "outletCostToYouUsd": 250000,
-  "revenueModel": "All revenues and costs shared equally with partner (50% share)",
-  "ongoingCost": null,
-  "notes": "Local partner knows the local environment; finding a reliable partner is difficult"
- },
- {
-  "code": "WHOLLY_OWNED",
-  "name": "Wholly Owned Subsidiary",
-  "outletsOnEntry": 5,
-  "entryCostUsd": 250000,
-  "outletCostToYouUsd": 500000,
-  "revenueModel": "You own and operate the restaurants",
-  "ongoingCost": null,
-  "notes": null
- }
+  {
+    "code": "FRANCHISING",
+    "name": "Franchising",
+    "outletsOnEntry": 20,
+    "entryCostUsd": 0,
+    "outletCostToYouUsd": 0,
+    "revenueModel": "Same cost as other modes — you choose $M on Decision. Fees and royalty only.",
+    "ongoingCost": null,
+    "notes": "About 20 franchised outlets per $1 M. Fit for unstable or hostile markets."
+  },
+  {
+    "code": "JOINT_VENTURE",
+    "name": "Joint Venture",
+    "outletsOnEntry": 8,
+    "entryCostUsd": 0,
+    "outletCostToYouUsd": 0,
+    "revenueModel": "Same cost as other modes — 50% share with a local partner.",
+    "ongoingCost": null,
+    "notes": "About 8 outlets per $1 M at 50% share. Fit for distant cultures and high barriers."
+  },
+  {
+    "code": "WHOLLY_OWNED",
+    "name": "Wholly Owned Subsidiary",
+    "outletsOnEntry": 4,
+    "entryCostUsd": 0,
+    "outletCostToYouUsd": 0,
+    "revenueModel": "Same cost as other modes — you own and run the outlets.",
+    "ongoingCost": null,
+    "notes": "About 4 own outlets per $1 M. Fit for stable, familiar markets."
+  }
 ]

@@ -1128,6 +1128,28 @@ tr:last-child td {
   font-weight: 700;
 }
 
+.welcome-how-title {
+  margin: 8px 0 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.welcome-how {
+  margin: 0;
+  padding-left: 1.25rem;
+  display: grid;
+  gap: 8px;
+  color: #3a3f4a;
+  font-size: 1.02rem;
+  line-height: 1.55;
+}
+
+.welcome-how li::marker {
+  color: var(--red);
+  font-weight: 700;
+}
+
 .welcome-credit {
   position: relative;
   z-index: 1;

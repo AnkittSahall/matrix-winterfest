@@ -199,17 +199,53 @@ export function Welcome({ topTabs }: { topTabs?: ReactNode }) {
           <div className="welcome-prose">
             <p>
               You manage the international strategy of a casual dining chain. Each round you
-              decide <strong>where to invest</strong> and in which <strong>entry mode</strong>.
+              decide where to invest and in which entry mode. Your score is your total profit at
+              the end.
             </p>
-            <p>
-              Your score is your <strong>total profit</strong> at the end. Holding cash is
-              allowed — idle money earns nothing.
-            </p>
-            <p>
-              After you continue: read <strong>Country Info</strong>, press{' '}
-              <strong>Start</strong>, then each round go{' '}
-              <strong>News → Decision → Result</strong>.
-            </p>
+            <h3 className="welcome-how-title">How to play</h3>
+            <ol className="welcome-how">
+              <li>
+                <strong>Enter your company name</strong> above and press Continue.
+              </li>
+              <li>
+                <strong>Country Info:</strong> study the tables (country attributes, economic
+                indicators, entry modes, and how each mode connects to those attributes), then
+                press <strong>Start</strong>.
+              </li>
+              <li>
+                <strong>News tab:</strong> every round opens with news. Read it closely: it
+                points to which countries and entry modes will gain or lose.
+              </li>
+              <li>
+                <strong>Decision tab:</strong> for each country choose one entry mode
+                (Franchising, Joint Venture or Wholly Owned) and enter an amount in $M. Choose
+                None to stay out of a country. Use as many countries as you like, but the total
+                cannot exceed your pool.
+              </li>
+              <li>
+                <strong>Idle cash:</strong> money you do not allocate earns nothing
+                {cfg?.budgetMode === 'B'
+                  ? ' but stays in your pool. Profits and losses carry into the next round’s pool.'
+                  : `. Your pool resets to $${cfg?.startBudgetM ?? 100} M every round; profit is not reinvested.`}
+              </li>
+              {cfg?.timerEnabled && (
+                <li>
+                  <strong>Timer:</strong> each round is timed
+                  {cfg.timerMinutes ? ` (${cfg.timerMinutes} minutes per round)` : ''}. The clock
+                  starts when the round opens on News and runs through Decision. You get a popup
+                  warning near the end. At zero, whatever you have entered is locked and scored
+                  automatically.
+                </li>
+              )}
+              <li>
+                <strong>Lock the round</strong> to see your profit or loss on the Result tab, then
+                continue. A locked round cannot be changed.
+              </li>
+              <li>
+                <strong>Score:</strong> your total profit after all {cfg?.numRounds ?? '—'}{' '}
+                rounds. The Glossary tab is available on every screen.
+              </li>
+            </ol>
           </div>
         </div>
 

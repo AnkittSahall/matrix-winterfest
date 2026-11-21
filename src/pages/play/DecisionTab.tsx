@@ -3,9 +3,9 @@ import { api, type AllocationRow, type Country, type RunView } from '../../api'
 
 const MODES = [
   { code: 'NONE', label: 'None' },
-  { code: 'FRANCHISING', label: 'Franchising (25 outlets)' },
-  { code: 'JOINT_VENTURE', label: 'Joint Venture (5 outlets)' },
-  { code: 'WHOLLY_OWNED', label: 'Wholly Owned (5 outlets)' },
+  { code: 'FRANCHISING', label: 'Franchising (20 outlets / $1M)' },
+  { code: 'JOINT_VENTURE', label: 'Joint Venture (8 outlets, 50% / $1M)' },
+  { code: 'WHOLLY_OWNED', label: 'Wholly Owned (4 outlets / $1M)' },
 ]
 
 export function DecisionTab({
