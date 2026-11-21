@@ -47,7 +47,7 @@ export function defaultConfig() {
     sequence: [1, 2, 3, 4, 5, 6],
     startBudgetM: 100,
     budgetMode: 'A',
-    timerEnabled: false,
+    timerEnabled: true,
     timerMinutes: 5,
     alertMinutes: 1,
     timerOverrides: {},
@@ -220,6 +220,85 @@ export async function loadDb() {
   }
 }
 
+/** Meta only — fast path for lobby/config/auth. */
+export async function getMetaState() {
+  if (!usingSupabase()) {
+    const d = fileLoad()
+    return {
+      competitionId: d.competitionId,
+      roomCode: d.roomCode || d.config.roomCode,
+      lobbyOpen: !!d.lobbyOpen,
+      config: withLobbyFields(d.config),
+    }
+  }
+  const meta = await ensureMeta()
+  const config = withLobbyFields(meta.config)
+  return {
+    competitionId: meta.competition_id,
+    roomCode: config.roomCode,
+    lobbyOpen: !!config.lobbyOpen,
+    config,
+  }
+}
+
+export async function getRunById(runId) {
+  if (!usingSupabase()) {
+    return fileLoad().runs[runId] || null
+  }
+  const client = sb()
+  const { data, error } = await client
+    .from('matrix_runs')
+    .select('data')
+    .eq('run_id', runId)
+    .maybeSingle()
+  if (error) throw new Error(`Supabase get run: ${error.message}`)
+  return data?.data || null
+}
+
+export async function getDraftFor(runId, round) {
+  if (!usingSupabase()) {
+    return fileLoad().drafts[`${runId}:${round}`] || null
+  }
+  const client = sb()
+  const { data, error } = await client
+    .from('matrix_drafts')
+    .select('allocations')
+    .eq('run_id', runId)
+    .eq('round', round)
+    .maybeSingle()
+  if (error) throw new Error(`Supabase get draft: ${error.message}`)
+  return data?.allocations ?? null
+}
+
+export async function sessionExists(token) {
+  if (!token) return false
+  if (!usingSupabase()) {
+    return Boolean(fileLoad().sessions?.[token])
+  }
+  const client = sb()
+  const { data, error } = await client
+    .from('matrix_sessions')
+    .select('token')
+    .eq('token', token)
+    .maybeSingle()
+  if (error) throw new Error(`Supabase session: ${error.message}`)
+  return Boolean(data)
+}
+
+export async function listCompletedRuns(competitionId) {
+  if (!usingSupabase()) {
+    return Object.values(fileLoad().runs).filter((r) => r.status === 'COMPLETED')
+  }
+  const client = sb()
+  const { data, error } = await client
+    .from('matrix_runs')
+    .select('data')
+    .eq('competition_id', competitionId)
+    .eq('status', 'COMPLETED')
+  if (error) throw new Error(`Supabase list completed: ${error.message}`)
+  return (data || []).map((r) => r.data)
+}
+
 export async function upsertRun(run, competitionId) {
   if (!usingSupabase()) {
     const d = fileLoad()
@@ -306,12 +385,17 @@ export async function saveConfig(config, competitionId) {
 }
 
 export async function setLobbyOpen(open) {
-  const d = await loadDb()
-  d.config = withLobbyFields(d.config)
-  d.config.lobbyOpen = !!open
-  d.lobbyOpen = !!open
-  await saveConfig(d.config, d.competitionId)
-  return { roomCode: d.config.roomCode, lobbyOpen: d.lobbyOpen, competitionId: d.competitionId }
+  const meta = await getMetaState()
+  const config = withLobbyFields(meta.config)
+  config.lobbyOpen = !!open
+  await saveConfig(config, meta.competitionId)
+  if (!usingSupabase()) {
+    const d = fileLoad()
+    d.lobbyOpen = !!open
+    d.roomCode = config.roomCode
+    fileSave(d)
+  }
+  return { roomCode: config.roomCode, lobbyOpen: !!open, competitionId: meta.competitionId }
 }
 
 /** New competition — old runs archived by competition_id. Keeps admin sessions. */

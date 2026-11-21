@@ -4,7 +4,6 @@ import cookieParser from 'cookie-parser'
 import { resolveRound, nextPool, scaleToPool, round2, workedExample } from './engine.js'
 import {
   loadSeed,
-  loadDb,
   publicConfig,
   defaultConfig,
   randomUUID,
@@ -17,6 +16,11 @@ import {
   resetCompetition,
   setLobbyOpen,
   normalizeRoomCode,
+  getMetaState,
+  getRunById,
+  getDraftFor,
+  sessionExists,
+  listCompletedRuns,
 } from './store.js'
 
 const PORT = process.env.PORT || 3001
@@ -31,8 +35,7 @@ app.use(cookieParser())
 async function requireAdmin(req, res, next) {
   try {
     const token = req.cookies?.admin_session
-    const d = await loadDb()
-    if (!token || !d.sessions?.[token]) {
+    if (!token || !(await sessionExists(token))) {
       return res.status(401).json({ error: 'Unauthorized' })
     }
     next()
@@ -48,10 +51,6 @@ function scenarioForRound(run, round) {
 
 function getNews(scenarioId) {
   return seed.news.find((n) => n.scenarioId === scenarioId) || null
-}
-
-function draftKey(runId, round) {
-  return `${runId}:${round}`
 }
 
 function sanitizeAllocations(rows) {
@@ -72,24 +71,17 @@ function sanitizeAllocations(rows) {
   return out
 }
 
-async function persistRun(d, run) {
-  d.runs[run.runId] = run
-  await upsertRun(run, d.competitionId)
+async function persistRun(run, competitionId) {
+  await upsertRun(run, competitionId)
 }
 
-async function persistDraft(d, runId, round, allocations) {
-  d.drafts[draftKey(runId, round)] = allocations
-  await upsertDraft(runId, round, allocations)
-}
-
-async function lazyAutoLock(run, d) {
+async function lazyAutoLock(run, competitionId) {
   if (run.status !== 'IN_PROGRESS') return run
   if (run.phase === 'RESULT') return run
   if (!run.configSnapshot.timerEnabled || !run.roundDeadlineAt) return run
   if (Date.now() < new Date(run.roundDeadlineAt).getTime()) return run
 
-  const key = draftKey(run.runId, run.currentRound)
-  const draft = d.drafts[key] || []
+  const draft = (await getDraftFor(run.runId, run.currentRound)) || []
   const pool = run.currentPoolM
   const allocations = scaleToPool(draft, pool)
   const scenarioId = scenarioForRound(run, run.currentRound)
@@ -129,7 +121,7 @@ async function lazyAutoLock(run, d) {
   }
   run.phase = 'RESULT'
   run.roundDeadlineAt = null
-  await persistRun(d, run)
+  await persistRun(run, competitionId)
   return run
 }
 
@@ -168,9 +160,8 @@ function playerRunView(run) {
   }
 }
 
-function completedResults(d) {
-  return Object.values(d.runs)
-    .filter((r) => r.status === 'COMPLETED')
+function rankResults(runs) {
+  return runs
     .map((r) => ({
       runId: r.runId,
       companyName: r.companyName,
@@ -232,8 +223,8 @@ app.get(
 app.get(
   '/api/config/public',
   asyncHandler(async (_req, res) => {
-    const d = await loadDb()
-    res.json(publicConfig(d.config))
+    const meta = await getMetaState()
+    res.json(publicConfig(meta.config))
   }),
 )
 
@@ -241,10 +232,10 @@ app.get(
 app.get(
   '/api/lobby',
   asyncHandler(async (_req, res) => {
-    const d = await loadDb()
+    const meta = await getMetaState()
     res.json({
-      open: !!d.lobbyOpen,
-      message: d.lobbyOpen
+      open: !!meta.lobbyOpen,
+      message: meta.lobbyOpen
         ? 'Room is open — enter the Room ID from your facilitator.'
         : 'Waiting for facilitator to activate the room.',
     })
@@ -295,12 +286,12 @@ app.get(
   '/api/admin/config',
   requireAdmin,
   asyncHandler(async (_req, res) => {
-    const d = await loadDb()
+    const meta = await getMetaState()
     res.json({
-      ...d.config,
-      competitionId: d.competitionId,
-      roomCode: d.roomCode,
-      lobbyOpen: !!d.lobbyOpen,
+      ...meta.config,
+      competitionId: meta.competitionId,
+      roomCode: meta.roomCode,
+      lobbyOpen: !!meta.lobbyOpen,
       scenarios: seed.scenarios,
     })
   }),
@@ -341,9 +332,9 @@ app.put(
       }
     }
 
-    const d = await loadDb()
-    const prev = d.config || defaultConfig()
-    d.config = {
+    const meta = await getMetaState()
+    const prev = meta.config || defaultConfig()
+    const config = {
       ...prev,
       configId: randomUUID(),
       version: (prev.version || 0) + 1,
@@ -360,7 +351,7 @@ app.put(
       lobbyOpen: !!prev.lobbyOpen,
       createdAt: new Date().toISOString(),
     }
-    await saveConfig(d.config, d.competitionId)
+    await saveConfig(config, meta.competitionId)
     const labels = sequence
       .map((id, i) => {
         const t = seed.scenarios.find((s) => s.scenarioId === id)?.title || id
@@ -368,8 +359,8 @@ app.put(
       })
       .join(' · ')
     res.json({
-      config: d.config,
-      summary: `${labels} · Budget $${d.config.startBudgetM}M · Mode ${budgetMode}${
+      config,
+      summary: `${labels} · Budget $${config.startBudgetM}M · Mode ${budgetMode}${
         timerEnabled ? ` · Timer ${timerMinutes} min` : ''
       }`,
     })
@@ -399,11 +390,11 @@ app.get(
   '/api/admin/results',
   requireAdmin,
   asyncHandler(async (_req, res) => {
-    const d = await loadDb()
-    const results = completedResults(d)
+    const meta = await getMetaState()
+    const results = rankResults(await listCompletedRuns(meta.competitionId))
     res.json({
       generatedAt: new Date().toISOString(),
-      competitionId: d.competitionId,
+      competitionId: meta.competitionId,
       count: results.length,
       results,
     })
@@ -418,17 +409,17 @@ app.post(
     if (name.length < 2 || name.length > 40) {
       return res.status(400).json({ error: 'Company name must be 2–40 characters' })
     }
-    const d = await loadDb()
-    if (!d.lobbyOpen) {
+    const meta = await getMetaState()
+    if (!meta.lobbyOpen) {
       return res.status(403).json({
         error: 'Room is locked. Wait for the facilitator to activate the competition.',
       })
     }
     const given = normalizeRoomCode(req.body?.roomCode)
-    if (!given || given !== normalizeRoomCode(d.roomCode)) {
+    if (!given || given !== normalizeRoomCode(meta.roomCode)) {
       return res.status(403).json({ error: 'Invalid Room ID. Ask your facilitator for the code.' })
     }
-    const cfg = { ...d.config }
+    const cfg = { ...meta.config }
     const runId = randomUUID()
     const run = {
       runId,
@@ -446,7 +437,7 @@ app.post(
       createdAt: new Date().toISOString(),
       completedAt: null,
     }
-    await persistRun(d, run)
+    await persistRun(run, meta.competitionId)
     res.json(playerRunView(run))
   }),
 )
@@ -454,18 +445,17 @@ app.post(
 app.get(
   '/api/runs',
   asyncHandler(async (_req, res) => {
-    const d = await loadDb()
-    res.json(completedResults(d))
+    const meta = await getMetaState()
+    res.json(rankResults(await listCompletedRuns(meta.competitionId)))
   }),
 )
 
 app.get(
   '/api/runs/:id',
   asyncHandler(async (req, res) => {
-    const d = await loadDb()
-    let run = d.runs[req.params.id]
+    let run = await getRunById(req.params.id)
     if (!run) return res.status(404).json({ error: 'Run not found' })
-    run = await lazyAutoLock(run, d)
+    run = await lazyAutoLock(run)
     res.json(playerRunView(run))
   }),
 )
@@ -473,8 +463,7 @@ app.get(
 app.post(
   '/api/runs/:id/start',
   asyncHandler(async (req, res) => {
-    const d = await loadDb()
-    let run = d.runs[req.params.id]
+    let run = await getRunById(req.params.id)
     if (!run) return res.status(404).json({ error: 'Run not found' })
     if (run.status === 'BRIEFING') {
       run.status = 'IN_PROGRESS'
@@ -491,7 +480,7 @@ app.post(
       } else {
         run.roundDeadlineAt = null
       }
-      await persistRun(d, run)
+      await persistRun(run)
     }
     res.json(playerRunView(run))
   }),
@@ -500,10 +489,9 @@ app.post(
 app.get(
   '/api/runs/:id/news',
   asyncHandler(async (req, res) => {
-    const d = await loadDb()
-    let run = d.runs[req.params.id]
+    let run = await getRunById(req.params.id)
     if (!run) return res.status(404).json({ error: 'Run not found' })
-    run = await lazyAutoLock(run, d)
+    run = await lazyAutoLock(run)
     if (run.status === 'BRIEFING' || !run.currentRound) {
       return res.status(403).json({ error: 'Press Start to begin Round 1' })
     }
@@ -521,12 +509,10 @@ app.get(
 app.get(
   '/api/runs/:id/draft',
   asyncHandler(async (req, res) => {
-    const d = await loadDb()
-    const run = d.runs[req.params.id]
+    const run = await getRunById(req.params.id)
     if (!run) return res.status(404).json({ error: 'Run not found' })
     const round = run.currentRound || 1
-    const key = draftKey(run.runId, round)
-    let draft = d.drafts[key]
+    let draft = await getDraftFor(run.runId, round)
     if (!draft) {
       const prev = (run.history || []).find((h) => h.round === round - 1)
       draft = prev?.allocations?.map((a) => ({ ...a })) || []
@@ -538,10 +524,9 @@ app.get(
 app.put(
   '/api/runs/:id/draft',
   asyncHandler(async (req, res) => {
-    const d = await loadDb()
-    let run = d.runs[req.params.id]
+    let run = await getRunById(req.params.id)
     if (!run) return res.status(404).json({ error: 'Run not found' })
-    run = await lazyAutoLock(run, d)
+    run = await lazyAutoLock(run)
     if (run.phase !== 'NEWS' && run.phase !== 'DECISION') {
       return res.status(403).json({ error: 'Round is locked' })
     }
@@ -553,7 +538,7 @@ app.put(
       const amountM = mode === 'NONE' ? 0 : Math.max(0, Number(row?.amountM) || 0)
       normalized.push({ countryCode: c.code, modeCode: mode, amountM: round2(amountM) })
     }
-    await persistDraft(d, run.runId, run.currentRound, normalized)
+    await upsertDraft(run.runId, run.currentRound, normalized)
     res.json({ ok: true })
   }),
 )
@@ -561,13 +546,12 @@ app.put(
 app.post(
   '/api/runs/:id/phase',
   asyncHandler(async (req, res) => {
-    const d = await loadDb()
-    let run = d.runs[req.params.id]
+    let run = await getRunById(req.params.id)
     if (!run) return res.status(404).json({ error: 'Run not found' })
-    run = await lazyAutoLock(run, d)
+    run = await lazyAutoLock(run)
     if (run.phase === 'NEWS') {
       run.phase = 'DECISION'
-      await persistRun(d, run)
+      await persistRun(run)
     }
     res.json(playerRunView(run))
   }),
@@ -576,10 +560,9 @@ app.post(
 app.post(
   '/api/runs/:id/lock',
   asyncHandler(async (req, res) => {
-    const d = await loadDb()
-    let run = d.runs[req.params.id]
+    let run = await getRunById(req.params.id)
     if (!run) return res.status(404).json({ error: 'Run not found' })
-    run = await lazyAutoLock(run, d)
+    run = await lazyAutoLock(run)
 
     if (run.phase === 'RESULT') {
       return res.json(playerRunView(run))
@@ -590,8 +573,8 @@ app.post(
 
     const pool = run.currentPoolM
     const fromBody = sanitizeAllocations(req.body?.allocations)
-    const key = draftKey(run.runId, run.currentRound)
-    const fromDraft = sanitizeAllocations(d.drafts[key] || [])
+    const stored = (await getDraftFor(run.runId, run.currentRound)) || []
+    const fromDraft = sanitizeAllocations(stored)
     const allocations = fromBody.length ? fromBody : fromDraft
 
     const invested = round2(allocations.reduce((s, a) => s + a.amountM, 0))
@@ -602,7 +585,7 @@ app.post(
     if (run.configSnapshot.timerEnabled && run.roundDeadlineAt) {
       const late = Date.now() - new Date(run.roundDeadlineAt).getTime()
       if (late > 2000) {
-        run = await lazyAutoLock(run, d)
+        run = await lazyAutoLock(run)
         return res.json(playerRunView(run))
       }
     }
@@ -642,7 +625,7 @@ app.post(
     run.currentPoolM = closing
     run.phase = 'RESULT'
     run.roundDeadlineAt = null
-    await persistRun(d, run)
+    await persistRun(run)
     res.json(playerRunView(run))
   }),
 )
@@ -650,16 +633,18 @@ app.post(
 app.post(
   '/api/runs/:id/next',
   asyncHandler(async (req, res) => {
-    const d = await loadDb()
-    let run = d.runs[req.params.id]
+    let run = await getRunById(req.params.id)
     if (!run) return res.status(404).json({ error: 'Run not found' })
     if (run.phase !== 'RESULT') return res.status(403).json({ error: 'Lock the round first' })
 
     if (run.currentRound >= run.configSnapshot.numRounds) {
       run.status = 'COMPLETED'
       run.completedAt = new Date().toISOString()
-      await persistRun(d, run)
-      const ranked = completedResults(d).find((r) => r.runId === run.runId)
+      await persistRun(run)
+      const meta = await getMetaState()
+      const ranked = rankResults(await listCompletedRuns(meta.competitionId)).find(
+        (r) => r.runId === run.runId,
+      )
       void mirrorToSheet({
         event: 'run_completed',
         ...ranked,
@@ -680,7 +665,7 @@ app.post(
     } else {
       run.roundDeadlineAt = null
     }
-    await persistRun(d, run)
+    await persistRun(run)
     res.json({ ...playerRunView(run), finished: false })
   }),
 )
@@ -688,11 +673,10 @@ app.post(
 app.post(
   '/api/runs/:id/alert-shown',
   asyncHandler(async (req, res) => {
-    const d = await loadDb()
-    const run = d.runs[req.params.id]
+    const run = await getRunById(req.params.id)
     if (!run) return res.status(404).json({ error: 'Run not found' })
     run.alertShown = true
-    await persistRun(d, run)
+    await persistRun(run)
     res.json({ ok: true })
   }),
 )

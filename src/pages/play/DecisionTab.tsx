@@ -23,23 +23,37 @@ export function DecisionTab({
   const [error, setError] = useState('')
   const [confirm, setConfirm] = useState(false)
   const [busy, setBusy] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    void Promise.all([api.countries(), api.getDraft(run.runId)]).then(([c, d]) => {
-      setCountries(c.countries)
-      const map = new Map(d.allocations.map((a) => [a.countryCode, a]))
-      setRows(
-        c.countries.map((co) => {
-          const a = map.get(co.code)
-          return {
-            countryCode: co.code,
-            modeCode: a?.modeCode || 'NONE',
-            amountM: a?.amountM || 0,
-          }
-        }),
-      )
-      setAmountText({})
-    })
+    let alive = true
+    setLoading(true)
+    void Promise.all([api.countries(), api.getDraft(run.runId)])
+      .then(([c, d]) => {
+        if (!alive) return
+        setCountries(c.countries)
+        const map = new Map(d.allocations.map((a) => [a.countryCode, a]))
+        setRows(
+          c.countries.map((co) => {
+            const a = map.get(co.code)
+            return {
+              countryCode: co.code,
+              modeCode: a?.modeCode || 'NONE',
+              amountM: a?.amountM || 0,
+            }
+          }),
+        )
+        setAmountText({})
+      })
+      .catch((e) => {
+        if (alive) setError(e instanceof Error ? e.message : 'Failed to load')
+      })
+      .finally(() => {
+        if (alive) setLoading(false)
+      })
+    return () => {
+      alive = false
+    }
   }, [run.runId, run.currentRound])
 
   // autosave debounced
@@ -137,6 +151,8 @@ export function DecisionTab({
       setBusy(false)
     }
   }
+
+  if (loading) return <div className="empty">Loading decision table…</div>
 
   return (
     <div>

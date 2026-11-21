@@ -195,6 +195,7 @@ export function Play() {
       {tab === 'news' && (
         <NewsTab
           runId={runId}
+          round={run.currentRound}
           onGoDecision={async () => {
             const r = await api.toDecision(runId)
             setRun(r)

@@ -3,30 +3,45 @@ import { api } from '../../api'
 
 export function NewsTab({
   runId,
+  round,
   onGoDecision,
 }: {
   runId: string
+  round: number
   onGoDecision: () => void
 }) {
   const [title, setTitle] = useState('')
-  const [round, setRound] = useState(1)
   const [numRounds, setNumRounds] = useState(6)
   const [items, setItems] = useState<{ order: number; headline: string; body: string }[]>([])
   const [error, setError] = useState('')
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    let alive = true
+    setLoading(true)
+    setError('')
     api
       .news(runId)
       .then((n) => {
+        if (!alive) return
         setTitle(n.title)
-        setRound(n.round)
         setNumRounds(n.numRounds)
         setItems(n.items)
       })
-      .catch((e) => setError(e.message))
-  }, [runId])
+      .catch((e) => {
+        if (!alive) return
+        setError(e.message)
+      })
+      .finally(() => {
+        if (alive) setLoading(false)
+      })
+    return () => {
+      alive = false
+    }
+  }, [runId, round])
 
   if (error) return <div className="empty">{error}</div>
+  if (loading) return <div className="empty">Loading news…</div>
 
   return (
     <div>
