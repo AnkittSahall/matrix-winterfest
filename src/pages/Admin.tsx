@@ -1,6 +1,11 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { api, type AdminConfig, type AdminResultRow } from '../api'
+import {
+  api,
+  type AdminConfig,
+  type AdminResultRow,
+  type LiveBoardSettings,
+} from '../api'
 
 function downloadExcel(results: AdminResultRow[]) {
   const headers = [
@@ -45,10 +50,20 @@ export function Admin() {
   const [results, setResults] = useState<AdminResultRow[]>([])
   const [error, setError] = useState('')
   const [summary, setSummary] = useState('')
+  const [liveBoard, setLiveBoard] = useState<LiveBoardSettings | null>(null)
+  const [liveRounds, setLiveRounds] = useState<
+    { round: number; status: string; submitted: number; total: number; revealed: boolean }[]
+  >([])
 
   const loadResults = async () => {
     const data = await api.adminResults()
     setResults(data.results)
+  }
+
+  const loadLive = async () => {
+    const data = await api.adminLive()
+    setLiveBoard(data.board)
+    setLiveRounds(data.rounds)
   }
 
   const load = async () => {
@@ -56,6 +71,7 @@ export function Admin() {
     setCfg(c)
     setAuthed(true)
     await loadResults()
+    await loadLive().catch(() => undefined)
   }
 
   useEffect(() => {
@@ -205,6 +221,167 @@ export function Admin() {
         >
           Reset competition
         </button>
+      </div>
+
+      <h3 className="section-label">Live Result Screen</h3>
+      <p className="page-help">
+        Open MatriX Arena on a projector. Press F11 or use Fullscreen on the live page. Click once
+        on the live screen to enable sound.
+      </p>
+      <div className="actions-row">
+        <a className="btn btn-primary" href="/live" target="_blank" rel="noreferrer">
+          Open Live Screen
+        </a>
+        <button
+          className="btn btn-secondary"
+          onClick={() => void loadLive().catch((e) => setError(e.message))}
+        >
+          Refresh live status
+        </button>
+        <button
+          className="btn btn-secondary"
+          onClick={() =>
+            void api
+              .adminLivePodium()
+              .then(async () => {
+                setSummary('Champion / podium flagged on live screen.')
+                await loadLive()
+              })
+              .catch((e) => setError(e instanceof Error ? e.message : 'Failed'))
+          }
+        >
+          Show podium
+        </button>
+        <button
+          className="btn btn-secondary"
+          onClick={() => {
+            if (
+              !window.confirm(
+                'This clears the leaderboard for the current event. Team data is archived, not deleted.',
+              )
+            ) {
+              return
+            }
+            void api
+              .adminLiveReset()
+              .then(async () => {
+                setSummary('Live board reset. Only new joins after this count.')
+                await loadLive()
+              })
+              .catch((e) => setError(e instanceof Error ? e.message : 'Reset failed'))
+          }}
+        >
+          Reset live board
+        </button>
+      </div>
+
+      {liveBoard && (
+        <div className="list" style={{ marginTop: 12, marginBottom: 12 }}>
+          <label style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+            <input
+              type="checkbox"
+              checked={liveBoard.registrationLocked}
+              onChange={(e) =>
+                void api
+                  .adminLiveSettings({ registrationLocked: e.target.checked })
+                  .then(async (r) => {
+                    setLiveBoard(r.board)
+                    setSummary(
+                      e.target.checked
+                        ? 'New teams locked.'
+                        : 'New teams can join again (if Activate is on).',
+                    )
+                  })
+                  .catch((err) => setError(err instanceof Error ? err.message : 'Failed'))
+              }
+            />
+            Lock new teams
+          </label>
+          <label style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+            <input
+              type="checkbox"
+              checked={liveBoard.soundOn}
+              onChange={(e) =>
+                void api
+                  .adminLiveSettings({ soundOn: e.target.checked })
+                  .then((r) => setLiveBoard(r.board))
+                  .catch((err) => setError(err instanceof Error ? err.message : 'Failed'))
+              }
+            />
+            Sound effects on live screen
+          </label>
+          <label style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+            <input
+              type="checkbox"
+              checked={liveBoard.showTicker}
+              onChange={(e) =>
+                void api
+                  .adminLiveSettings({ showTicker: e.target.checked })
+                  .then((r) => setLiveBoard(r.board))
+                  .catch((err) => setError(err instanceof Error ? err.message : 'Failed'))
+              }
+            />
+            Show submitted team names ticker
+          </label>
+        </div>
+      )}
+
+      <div className="table-wrap" style={{ marginBottom: 18 }}>
+        <table>
+          <thead>
+            <tr>
+              <th>Round</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {liveRounds.map((r) => {
+              const canReveal =
+                !r.revealed &&
+                liveBoard != null &&
+                r.round === (liveBoard.revealedRound || 0) + 1
+              return (
+                <tr key={r.round}>
+                  <td>
+                    <strong>Round {r.round}</strong>
+                  </td>
+                  <td>{r.status}</td>
+                  <td>
+                    {r.revealed ? (
+                      <span style={{ color: 'var(--muted)' }}>Revealed</span>
+                    ) : (
+                      <button
+                        className="btn btn-primary"
+                        disabled={!canReveal}
+                        onClick={() =>
+                          void api
+                            .adminLiveReveal(r.round)
+                            .then(async () => {
+                              setSummary(`Round ${r.round} revealed on live screen.`)
+                              await loadLive()
+                            })
+                            .catch((e) =>
+                              setError(e instanceof Error ? e.message : 'Reveal failed'),
+                            )
+                        }
+                      >
+                        Reveal now
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              )
+            })}
+            {liveRounds.length === 0 && (
+              <tr>
+                <td colSpan={3} style={{ color: 'var(--muted)' }}>
+                  Load live status after login.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
 
       <h3 className="section-label">Competition results</h3>

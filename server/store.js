@@ -64,6 +64,7 @@ function emptyDb() {
     roomCode: config.roomCode,
     lobbyOpen: false,
     config,
+    liveBoard: null,
     runs: {},
     drafts: {},
     sessions: {},
@@ -297,6 +298,43 @@ export async function listCompletedRuns(competitionId) {
     .eq('status', 'COMPLETED')
   if (error) throw new Error(`Supabase list completed: ${error.message}`)
   return (data || []).map((r) => r.data)
+}
+
+/** All runs for the active competition (for live board). */
+export async function listCompetitionRuns(competitionId) {
+  if (!usingSupabase()) {
+    return Object.values(fileLoad().runs)
+  }
+  const client = sb()
+  const { data, error } = await client
+    .from('matrix_runs')
+    .select('data')
+    .eq('competition_id', competitionId)
+  if (error) throw new Error(`Supabase list competition runs: ${error.message}`)
+  return (data || []).map((r) => r.data)
+}
+
+export async function getLiveBoardState() {
+  if (!usingSupabase()) {
+    const d = fileLoad()
+    return d.liveBoard || d.config?.liveBoard || null
+  }
+  const meta = await ensureMeta()
+  return meta.config?.liveBoard || null
+}
+
+export async function saveLiveBoardState(liveBoard) {
+  const meta = await getMetaState()
+  const config = withLobbyFields({ ...meta.config, liveBoard })
+  if (!usingSupabase()) {
+    const d = fileLoad()
+    d.liveBoard = liveBoard
+    d.config = config
+    fileSave(d)
+    return liveBoard
+  }
+  await saveConfig(config, meta.competitionId)
+  return liveBoard
 }
 
 export async function upsertRun(run, competitionId) {

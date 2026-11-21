@@ -1,0 +1,13 @@
+-- Optional: Live board state is stored inside matrix_meta.config.liveBoard (JSONB).
+-- No separate table required. This file documents the shape for facilitators.
+
+-- liveBoard object inside config:
+-- {
+--   "revealedRound": 0,
+--   "registrationLocked": false,
+--   "soundOn": false,
+--   "showTicker": true,
+--   "resetAt": null,
+--   "championShown": false,
+--   "lastRanks": {}
+-- }

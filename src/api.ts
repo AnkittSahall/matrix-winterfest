@@ -128,6 +128,66 @@ export const api = {
         body: JSON.stringify({ open }),
       },
     ),
+  liveState: () => req<LiveStatePayload>('/api/live/state'),
+  adminLive: () =>
+    req<{
+      board: LiveBoardSettings
+      rounds: { round: number; status: string; submitted: number; total: number; revealed: boolean }[]
+      live: LiveStatePayload
+    }>('/api/admin/live'),
+  adminLiveReveal: (round: number) =>
+    req<{ ok: boolean }>('/api/admin/live/reveal', {
+      method: 'POST',
+      body: JSON.stringify({ round }),
+    }),
+  adminLiveSettings: (body: Partial<LiveBoardSettings>) =>
+    req<{ ok: boolean; board: LiveBoardSettings }>('/api/admin/live/settings', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    }),
+  adminLivePodium: () =>
+    req<{ ok: boolean }>('/api/admin/live/podium', { method: 'POST', body: '{}' }),
+  adminLiveReset: () =>
+    req<{ ok: boolean }>('/api/admin/live/reset', { method: 'POST', body: '{}' }),
+}
+
+export type LiveBoardSettings = {
+  revealedRound: number
+  registrationLocked: boolean
+  soundOn: boolean
+  showTicker: boolean
+  resetAt: string | null
+  championShown: boolean
+}
+
+export type LiveStatePayload = {
+  event: {
+    numRounds: number
+    budgetMode: 'A' | 'B'
+    startBudgetM: number
+    revealedRound: number
+    registrationLocked: boolean
+    soundOn: boolean
+    showTicker: boolean
+    championShown: boolean
+    statusLabel: string
+  }
+  progress: {
+    round: number
+    submitted: number
+    total: number
+    recentSubmitters: string[]
+    lobbyNames: string[]
+  }
+  teams: {
+    companyName: string
+    rank: number
+    prevRank: number | null
+    roundProfits: (number | null)[]
+    totalProfit: number
+    poolM?: number
+  }[]
+  highlights: Record<string, unknown>
 }
 
 export type AdminResultRow = {
