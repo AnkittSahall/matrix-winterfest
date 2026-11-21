@@ -93,7 +93,7 @@ export function FinalResult() {
           Go to Home
         </Link>
         <Link className="btn btn-primary" to="/">
-          Play again (new Room ID)
+          Play again
         </Link>
       </div>
     </div>
