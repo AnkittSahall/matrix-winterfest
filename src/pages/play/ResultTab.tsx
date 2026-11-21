@@ -5,11 +5,6 @@ function money(n: number) {
   return `$${n.toFixed(2)} M`
 }
 
-function moneyCell(n: number | null) {
-  if (n == null) return '—'
-  return n.toLocaleString('en-US', { maximumFractionDigits: 2, minimumFractionDigits: 0 })
-}
-
 function niceMax(raw: number) {
   if (raw <= 0) return 5
   const padded = raw * 1.15
@@ -112,13 +107,13 @@ function LineChart({
           strokeWidth="1.4"
         />
         {path && (
-          <path d={path} fill="none" stroke="#111827" strokeWidth="2" strokeLinejoin="round" />
+          <path d={path} fill="none" stroke="#e30613" strokeWidth="2.4" strokeLinejoin="round" />
         )}
         {drawn.map((p) => (
-          <circle key={p.x} cx={xAt(p.x)} cy={yAt(p.y)} r="3.2" fill="#111827" />
+          <circle key={p.x} cx={xAt(p.x)} cy={yAt(p.y)} r="3.5" fill="#e30613" />
         ))}
         <text x={12} y={14} className="cum-chart-axis">
-          $
+          $M
         </text>
         <text x={w / 2} y={h - 2} textAnchor="middle" className="cum-chart-axis">
           Round
@@ -179,7 +174,8 @@ function ProfitByCountry({
   numRounds: number
   names: Record<string, string>
 }) {
-  const rounds = Array.from({ length: numRounds + 1 }, (_, i) => i)
+  // Only show played + upcoming rounds 1..N (no confusing Round 0 column)
+  const rounds = Array.from({ length: numRounds }, (_, i) => i + 1)
   const sorted = history.slice().sort((a, b) => a.round - b.round)
 
   const codes = useMemo(() => {
@@ -192,7 +188,6 @@ function ProfitByCountry({
   }, [sorted, names])
 
   const cell = (code: string, round: number) => {
-    if (round === 0) return 0
     const h = sorted.find((x) => x.round === round)
     if (!h) return null
     const row = (h.countryProfits || []).find((c) => c.countryCode === code)
@@ -200,7 +195,6 @@ function ProfitByCountry({
   }
 
   const total = (round: number) => {
-    if (round === 0) return 0
     const h = sorted.find((x) => x.round === round)
     return h ? h.profitM : null
   }
@@ -216,7 +210,7 @@ function ProfitByCountry({
           <tr>
             <th>Country</th>
             {rounds.map((r) => (
-              <th key={r}>{r}</th>
+              <th key={r}>Round {r}</th>
             ))}
           </tr>
         </thead>
@@ -230,7 +224,7 @@ function ProfitByCountry({
                 const v = cell(code, r)
                 return (
                   <td key={r} className="mono">
-                    {moneyCell(v)}
+                    {v == null ? '—' : money(v)}
                   </td>
                 )
               })}
@@ -238,13 +232,13 @@ function ProfitByCountry({
           ))}
           <tr className="country-profit-total">
             <td>
-              <strong>Total Profit</strong>
+              <strong>Total profit</strong>
             </td>
             {rounds.map((r) => {
               const v = total(r)
               return (
                 <td key={r} className="mono">
-                  <strong>{moneyCell(v)}</strong>
+                  <strong>{v == null ? '—' : money(v)}</strong>
                 </td>
               )
             })}
@@ -327,8 +321,11 @@ export function ResultTab({ run, onNext }: { run: RunView; onNext: () => void })
       <p className="page-help">Starts at Round 0 ($0). Axis goes through all rounds.</p>
       <ProfitCharts history={run.history} numRounds={run.numRounds} />
 
-      <h3 className="section-label">Profit by country ($)</h3>
-      <p className="page-help">Columns are rounds. Round 0 is the start (all zero).</p>
+      <h3 className="section-label">Profit by country ($M)</h3>
+      <p className="page-help">
+        Each column is that round’s profit from the money you put in that country. Future rounds
+        show — until you play them.
+      </p>
       <ProfitByCountry history={run.history} numRounds={run.numRounds} names={names} />
 
       <h3 className="section-label">History</h3>
