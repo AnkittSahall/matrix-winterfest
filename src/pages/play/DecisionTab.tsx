@@ -155,140 +155,142 @@ export function DecisionTab({
   if (loading) return <div className="empty">Loading decision table…</div>
 
   return (
-    <div>
-      <h2 className="page-title">Round {run.currentRound} decisions</h2>
-      <p className="page-help">
-        Pick one entry mode per country and how many $ million to put there. You can leave money
-        as idle cash.
-      </p>
-
-      <div className="stats-plain">
-        <span>
-          Pool this round: <b>${run.currentPoolM.toFixed(2)} M</b>
-        </span>
-        <span>
-          Allocated: <b>${allocated.toFixed(2)} M</b>
-        </span>
-        <span className={over ? 'timer-red' : ''}>
-          Idle cash: <b>${idle.toFixed(2)} M</b>
-          {over ? ' — You have allocated more than your pool' : ''}
-        </span>
-      </div>
-
-      {run.timerEnabled && !readOnly && (
+    <div className="decision-page">
+      <div className="decision-main">
+        <h2 className="page-title">Round {run.currentRound} decisions</h2>
         <p className="page-help">
-          If the timer runs out, your current allocation is submitted automatically.
+          Pick one entry mode per country and how many $ million to put there. You can leave money
+          as idle cash.
         </p>
-      )}
 
-      <div className="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Country</th>
-              <th>Entry mode</th>
-              <th>Amount ($M)</th>
-              <th>Change vs last round</th>
-            </tr>
-          </thead>
-          <tbody>
-            {countries.map((c) => {
-              const row = rows.find((r) => r.countryCode === c.code) || {
-                countryCode: c.code,
-                modeCode: 'NONE',
-                amountM: 0,
-              }
-              return (
-                <tr key={c.code}>
-                  <td>
-                    <strong>{c.name}</strong>
-                    <div style={{ color: 'var(--muted)', fontSize: '0.78rem' }}>
-                      Risk {c.countryRisk} · Culture {c.culturalDistance || '—'}
-                    </div>
-                  </td>
-                  <td>
-                    <select
-                      disabled={readOnly}
-                      value={row.modeCode}
-                      onChange={(e) => update(c.code, { modeCode: e.target.value })}
-                    >
-                      {MODES.map((m) => (
-                        <option key={m.code} value={m.code}>
-                          {m.label}
-                        </option>
-                      ))}
-                    </select>
-                  </td>
-                  <td>
-                    <input
-                      type="text"
-                      inputMode="decimal"
-                      disabled={readOnly || row.modeCode === 'NONE'}
-                      placeholder="0"
-                      value={amountDisplay(c.code, row.amountM, row.modeCode)}
-                      onFocus={(e) => e.target.select()}
-                      onChange={(e) => onAmountChange(c.code, e.target.value)}
-                      onBlur={() =>
-                        setAmountText((t) => {
-                          const n = { ...t }
-                          delete n[c.code]
-                          return n
-                        })
-                      }
-                      style={{ width: 110 }}
-                    />
-                  </td>
-                  <td style={{ color: 'var(--muted)' }}>{changeLabel(c.code)}</td>
-                </tr>
-              )
-            })}
-          </tbody>
-        </table>
+        {run.timerEnabled && !readOnly && (
+          <p className="page-help">
+            If the timer runs out, your current allocation is submitted automatically.
+          </p>
+        )}
+
+        <div className="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Country</th>
+                <th>Entry mode</th>
+                <th>Amount ($M)</th>
+                <th>Change vs last round</th>
+              </tr>
+            </thead>
+            <tbody>
+              {countries.map((c) => {
+                const row = rows.find((r) => r.countryCode === c.code) || {
+                  countryCode: c.code,
+                  modeCode: 'NONE',
+                  amountM: 0,
+                }
+                return (
+                  <tr key={c.code}>
+                    <td>
+                      <strong>{c.name}</strong>
+                      <div style={{ color: 'var(--muted)', fontSize: '0.78rem' }}>
+                        Risk {c.countryRisk} · Culture {c.culturalDistance || '—'}
+                      </div>
+                    </td>
+                    <td>
+                      <select
+                        disabled={readOnly}
+                        value={row.modeCode}
+                        onChange={(e) => update(c.code, { modeCode: e.target.value })}
+                      >
+                        {MODES.map((m) => (
+                          <option key={m.code} value={m.code}>
+                            {m.label}
+                          </option>
+                        ))}
+                      </select>
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        inputMode="decimal"
+                        disabled={readOnly || row.modeCode === 'NONE'}
+                        placeholder="0"
+                        value={amountDisplay(c.code, row.amountM, row.modeCode)}
+                        onFocus={(e) => e.target.select()}
+                        onChange={(e) => onAmountChange(c.code, e.target.value)}
+                        onBlur={() =>
+                          setAmountText((t) => {
+                            const n = { ...t }
+                            delete n[c.code]
+                            return n
+                          })
+                        }
+                      />
+                    </td>
+                    <td style={{ color: 'var(--muted)' }}>{changeLabel(c.code)}</td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        </div>
+
+        {error && <p className="field-error">{error}</p>}
       </div>
 
-      {error && <p className="field-error">{error}</p>}
-
-      {!readOnly && (
-        <div className="footer-actions">
-          <button
-            className="btn btn-secondary"
-            onClick={() => {
-              setAmountText({})
-              setRows((rs) => rs.map((r) => ({ ...r, modeCode: 'NONE', amountM: 0 })))
-            }}
-          >
-            Clear all
-          </button>
-          {run.currentRound > 1 && (
+      <div className="decision-dock">
+        <div className="stats-plain decision-dock-stats">
+          <span>
+            Pool <b>${run.currentPoolM.toFixed(2)} M</b>
+          </span>
+          <span>
+            Allocated <b>${allocated.toFixed(2)} M</b>
+          </span>
+          <span className={over ? 'timer-red' : ''}>
+            Idle <b>${idle.toFixed(2)} M</b>
+            {over ? ' — over pool' : ''}
+          </span>
+        </div>
+        {!readOnly && (
+          <div className="footer-actions decision-dock-actions">
             <button
               className="btn btn-secondary"
               onClick={() => {
-                const prevAlloc = prev?.allocations || []
                 setAmountText({})
-                setRows(
-                  countries.map((c) => {
-                    const a = prevAlloc.find((x) => x.countryCode === c.code)
-                    return {
-                      countryCode: c.code,
-                      modeCode: a?.modeCode || 'NONE',
-                      amountM: a?.amountM || 0,
-                    }
-                  }),
-                )
+                setRows((rs) => rs.map((r) => ({ ...r, modeCode: 'NONE', amountM: 0 })))
               }}
             >
-              Reset to last round
+              Clear all
             </button>
-          )}
-          <button
-            className="btn btn-primary"
-            disabled={!canLock || busy}
-            onClick={() => setConfirm(true)}
-          >
-            Lock Round {run.currentRound}
-          </button>
-        </div>
-      )}
+            {run.currentRound > 1 && (
+              <button
+                className="btn btn-secondary"
+                onClick={() => {
+                  const prevAlloc = prev?.allocations || []
+                  setAmountText({})
+                  setRows(
+                    countries.map((c) => {
+                      const a = prevAlloc.find((x) => x.countryCode === c.code)
+                      return {
+                        countryCode: c.code,
+                        modeCode: a?.modeCode || 'NONE',
+                        amountM: a?.amountM || 0,
+                      }
+                    }),
+                  )
+                }}
+              >
+                Reset to last round
+              </button>
+            )}
+            <button
+              className="btn btn-primary"
+              disabled={!canLock || busy}
+              onClick={() => setConfirm(true)}
+            >
+              Lock Round {run.currentRound}
+            </button>
+          </div>
+        )}
+      </div>
 
       {confirm && (
         <div className="modal-backdrop">

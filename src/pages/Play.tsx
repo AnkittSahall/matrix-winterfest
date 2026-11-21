@@ -126,118 +126,126 @@ export function Play() {
   }
 
   return (
-    <div className="shell">
-      <header className="sim-header">
-        <div className="brand">
-          <img src="/matrix-logo.jfif" alt="MatriX" />
-          <div className="brand-copy">
-            <strong>
-              Matri<span>X</span>
-            </strong>
-            <small>{run.companyName} · Home: USA</small>
+    <div className="shell shell-play">
+      <div className="play-sticky-top">
+        <header className="sim-header">
+          <div className="brand">
+            <img src="/matrix-logo.jfif" alt="MatriX" />
+            <div className="brand-copy">
+              <strong>
+                Matri<span>X</span>
+              </strong>
+              <small>{run.companyName} · Home: USA</small>
+            </div>
           </div>
-        </div>
-        <div className="status-line">
-          <span>
-            Budget <b>{money(run.currentPoolM)}</b>
-          </span>
-          <span className="sep">|</span>
-          <span>
-            {started ? (
+          <div className="status-line">
+            <span>
+              Budget <b>{money(run.currentPoolM)}</b>
+            </span>
+            <span className="sep">|</span>
+            <span>
+              {started ? (
+                <>
+                  Round <b>
+                    {run.currentRound}/{run.numRounds}
+                  </b>
+                </>
+              ) : (
+                <>
+                  Round <b>Not started</b>
+                </>
+              )}
+            </span>
+            <span className="sep">|</span>
+            <span>
+              Profit <b>{money(run.cumulativeProfitM)}</b>
+            </span>
+            {mm && (
               <>
-                Round <b>{run.currentRound}/{run.numRounds}</b>
-              </>
-            ) : (
-              <>
-                Round <b>Not started</b>
+                <span className="sep">|</span>
+                <span className={timerRed ? 'timer-red' : ''}>
+                  Time <b>{mm}</b>
+                </span>
               </>
             )}
-          </span>
-          <span className="sep">|</span>
-          <span>
-            Profit <b>{money(run.cumulativeProfitM)}</b>
-          </span>
-          {mm && (
-            <>
-              <span className="sep">|</span>
-              <span className={timerRed ? 'timer-red' : ''}>
-                Time <b>{mm}</b>
-              </span>
-            </>
-          )}
-          {!started && (
-            <button className="btn btn-primary" onClick={() => void start()}>
-              Start
-            </button>
-          )}
-        </div>
-      </header>
+            {!started && (
+              <button className="btn btn-primary" onClick={() => void start()}>
+                Start
+              </button>
+            )}
+          </div>
+        </header>
 
-      <nav className="tabs" aria-label="Play">
-        {(
-          [
-            ['country', 'Country Info'],
-            ['news', 'News'],
-            ['decision', 'Decision'],
-            ['result', 'Result'],
-            ['glossary', 'Glossary'],
-          ] as const
-        ).map(([id, label]) => {
-          const disabled =
-            (!started && id !== 'country' && id !== 'glossary') ||
-            (id === 'result' && started && run.phase !== 'RESULT')
-          return (
-            <button
-              key={id}
-              type="button"
-              className={`tab ${tab === id ? 'active' : ''}`}
-              disabled={disabled}
-              title={disabled && !started ? lockedHint : undefined}
-              onClick={() => go(id)}
-            >
-              {label}
-            </button>
-          )
-        })}
-      </nav>
+        <nav className="tabs" aria-label="Play">
+          {(
+            [
+              ['country', 'Country Info'],
+              ['news', 'News'],
+              ['decision', 'Decision'],
+              ['result', 'Result'],
+              ['glossary', 'Glossary'],
+            ] as const
+          ).map(([id, label]) => {
+            const disabled =
+              (!started && id !== 'country' && id !== 'glossary') ||
+              (id === 'result' && started && run.phase !== 'RESULT')
+            return (
+              <button
+                key={id}
+                type="button"
+                className={`tab ${tab === id ? 'active' : ''}`}
+                disabled={disabled}
+                title={disabled && !started ? lockedHint : undefined}
+                onClick={() => go(id)}
+              >
+                {label}
+              </button>
+            )
+          })}
+        </nav>
+      </div>
 
-      {tab === 'country' && <CountryInfoTab onStart={!started ? () => void start() : undefined} />}
-      {tab === 'news' && (
-        <NewsTab
-          runId={runId}
-          round={run.currentRound}
-          onGoDecision={async () => {
-            const r = await api.toDecision(runId)
-            setRun(r)
-            setTab('decision')
-          }}
-        />
-      )}
-      {tab === 'decision' && (
-        <DecisionTab
-          run={run}
-          readOnly={run.phase === 'RESULT'}
-          onLocked={async (r) => {
-            setRun(r)
-            setTab('result')
-          }}
-        />
-      )}
-      {tab === 'result' && run.phase === 'RESULT' && (
-        <ResultTab
-          run={run}
-          onNext={async () => {
-            const r = await api.next(runId)
-            setRun(r)
-            if (r.finished || r.status === 'COMPLETED') {
-              window.location.href = `/play/${runId}/final`
-              return
-            }
-            setTab('news')
-          }}
-        />
-      )}
-      {tab === 'glossary' && <GlossaryPage />}
+      <div className="play-body">
+        {tab === 'country' && (
+          <CountryInfoTab onStart={!started ? () => void start() : undefined} />
+        )}
+        {tab === 'news' && (
+          <NewsTab
+            runId={runId}
+            round={run.currentRound}
+            onGoDecision={async () => {
+              const r = await api.toDecision(runId)
+              setRun(r)
+              setTab('decision')
+            }}
+          />
+        )}
+        {tab === 'decision' && (
+          <DecisionTab
+            run={run}
+            readOnly={run.phase === 'RESULT'}
+            onLocked={async (r) => {
+              setRun(r)
+              setTab('result')
+            }}
+          />
+        )}
+        {tab === 'result' && run.phase === 'RESULT' && (
+          <ResultTab
+            run={run}
+            onNext={async () => {
+              const r = await api.next(runId)
+              setRun(r)
+              if (r.finished || r.status === 'COMPLETED') {
+                window.location.href = `/play/${runId}/final`
+                return
+              }
+              setTab('news')
+            }}
+          />
+        )}
+        {tab === 'glossary' && <GlossaryPage />}
+      </div>
 
       {alertOpen && run.timerEnabled && run.phase !== 'RESULT' && (
         <div className="modal-backdrop">
