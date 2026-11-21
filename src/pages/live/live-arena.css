@@ -43,6 +43,59 @@
   padding: clamp(0.6rem, 1.4vh, 1.1rem) clamp(0.8rem, 1.6vw, 1.6rem);
 }
 
+.live-stage-top6 {
+  gap: clamp(0.35rem, 0.9vh, 0.7rem);
+}
+
+.live-podium-compact {
+  max-width: 920px;
+}
+
+.live-podium-compact .live-podium-card {
+  min-height: clamp(64px, 9vh, 96px);
+  padding: clamp(0.45rem, 1vh, 0.75rem);
+}
+
+.live-board-top6 {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.live-table-top6 {
+  table-layout: fixed;
+  height: 100%;
+}
+
+.live-table-top6 th,
+.live-table-top6 td {
+  padding: clamp(0.45rem, 1.15vh, 0.85rem) clamp(0.45rem, 1vw, 0.8rem);
+  font-size: clamp(1.05rem, 1.55vw, 1.45rem);
+  line-height: 1.2;
+}
+
+.live-table-top6 th {
+  font-size: clamp(0.65rem, 1vw, 0.8rem);
+}
+
+.live-table-top6 .mono {
+  font-size: clamp(1rem, 1.45vw, 1.35rem);
+}
+
+.live-table-top6 .total-col {
+  font-size: clamp(1.1rem, 1.7vw, 1.55rem);
+}
+
+.live-table-top6 .pool-line {
+  font-size: 0.68em;
+  margin-top: 0.1rem;
+}
+
+.live-table-top6 tbody tr {
+  height: calc((100% - 2.5rem) / 6);
+}
+
 .live-header {
   display: grid;
   grid-template-columns: 1fr auto 1fr;

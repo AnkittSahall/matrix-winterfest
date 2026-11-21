@@ -195,6 +195,7 @@ export type AdminResultRow = {
   rank: number
   runId: string
   companyName: string
+  status?: string
   completedAt: string | null
   createdAt: string
   roundsPlayed: number

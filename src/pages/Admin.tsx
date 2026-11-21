@@ -346,7 +346,8 @@ export function Admin() {
 
       <h3 className="section-label">Competition results</h3>
       <p className="page-help">
-        Teams are ranked by total profit. Refresh after teams finish. Download opens in Excel.
+        Same teams as the live board (anyone who locked at least one round). Download opens in
+        Excel.
       </p>
       <div className="actions-row">
         <button
@@ -364,7 +365,7 @@ export function Admin() {
         </button>
       </div>
       {results.length === 0 ? (
-        <div className="empty">No completed runs yet. Results appear when a team finishes all rounds.</div>
+        <div className="empty">No played teams yet. Results appear after a team locks a round.</div>
       ) : (
         <div className="table-wrap">
           <table>
@@ -375,7 +376,7 @@ export function Admin() {
                 <th>Total profit</th>
                 <th>Final pool</th>
                 <th>Rounds</th>
-                <th>Finished</th>
+                <th>Status</th>
               </tr>
             </thead>
             <tbody>
@@ -396,7 +397,9 @@ export function Admin() {
                   <td className="mono">${r.finalPoolM.toFixed(2)} M</td>
                   <td>{r.roundsPlayed}</td>
                   <td>
-                    {r.completedAt ? new Date(r.completedAt).toLocaleString() : '—'}
+                    {r.completedAt
+                      ? new Date(r.completedAt).toLocaleString()
+                      : 'In progress'}
                   </td>
                 </tr>
               ))}

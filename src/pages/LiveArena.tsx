@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import type { LiveState, LiveTeam } from './live/types'
 import './live/live-arena.css'
 
+const TOP_N = 6
+
 function formatProfit(n: number | null | undefined) {
   if (n == null) return '—'
   const sign = n > 0 ? '+' : ''
@@ -58,23 +60,23 @@ export function LiveArena() {
   }
 
   const teams = state?.teams || []
+  const topTeams = teams.slice(0, TOP_N)
   const numRounds = state?.event.numRounds || 3
   const revealed = state?.event.revealedRound || 0
-  const podium = teams.slice(0, 3)
+  const podium = topTeams.slice(0, 3)
+  const lobbyNames = state?.progress.lobbyNames || []
   const progressPct =
     state && state.progress.total > 0
       ? Math.round((state.progress.submitted / state.progress.total) * 100)
       : 0
-  const waiting = !state || (state.progress.total === 0 && (state.progress.lobbyNames?.length || 0) === 0)
-  const lobbyOnly =
-    !!state &&
-    state.progress.total === 0 &&
-    (state.progress.lobbyNames?.length || 0) > 0 &&
-    revealed === 0
+
+  const noTeams = !state || lobbyNames.length === 0
+  const preReveal = !!state && revealed === 0 && lobbyNames.length > 0
+  const showBoard = !!state && revealed > 0 && topTeams.length > 0
 
   return (
     <div className="live-root">
-      <div className="live-stage">
+      <div className="live-stage live-stage-top6">
         <header className="live-header">
           <div className="live-brand">
             {logoOk ? (
@@ -114,8 +116,8 @@ export function LiveArena() {
           </div>
         </header>
 
-        {!waiting && !lobbyOnly && revealed > 0 && (
-          <div className="live-podium">
+        {showBoard && (
+          <div className="live-podium live-podium-compact">
             {[1, 0, 2].map((idx) => {
               const t = podium[idx]
               const place = idx === 0 ? 'gold' : idx === 1 ? 'silver' : 'bronze'
@@ -136,25 +138,28 @@ export function LiveArena() {
         )}
 
         <div className="live-main live-main-simple">
-          <div className={`live-board${teams.length > 20 ? ' scrollable' : ''}`}>
-            {waiting && (
+          <div className="live-board live-board-top6">
+            {noTeams && (
               <div className="live-empty-panel">
                 <h2>Waiting for teams…</h2>
-                <p>Ranks appear after the facilitator reveals a round.</p>
+                <p>Team names appear as they join.</p>
               </div>
             )}
-            {lobbyOnly && (
+
+            {preReveal && (
               <div className="live-empty-panel">
-                <h2>{state!.progress.lobbyNames.length} teams ready</h2>
+                <h2>{lobbyNames.length} teams ready</h2>
+                <p>Ranks show after Round 1 is revealed.</p>
                 <div className="live-lobby-chips">
-                  {state!.progress.lobbyNames.map((n, i) => (
+                  {lobbyNames.map((n, i) => (
                     <span key={`${n}-${i}`}>{n}</span>
                   ))}
                 </div>
               </div>
             )}
-            {!waiting && !lobbyOnly && (
-              <table className="live-table">
+
+            {showBoard && (
+              <table className="live-table live-table-top6">
                 <thead>
                   <tr>
                     <th>Rank</th>
@@ -167,7 +172,7 @@ export function LiveArena() {
                   </tr>
                 </thead>
                 <tbody>
-                  {teams.map((t) => {
+                  {topTeams.map((t) => {
                     const delta = rankDelta(t)
                     return (
                       <tr key={t.id || t.companyName} className={t.rank === 1 ? 'rank-1' : ''}>
@@ -183,12 +188,12 @@ export function LiveArena() {
                           )
                         })}
                         <td className={`mono total-col ${profitClass(t.totalProfit)}`}>
-                          {revealed > 0 ? formatProfit(t.totalProfit) : '—'}
-                          {state?.event.budgetMode === 'B' && t.poolM != null && revealed > 0 && (
+                          {formatProfit(t.totalProfit)}
+                          {state?.event.budgetMode === 'B' && t.poolM != null && (
                             <span className="pool-line">Pool ${t.poolM.toFixed(2)} M</span>
                           )}
                         </td>
-                        <td className={`mono ${delta.cls}`}>{revealed > 0 ? delta.text : '–'}</td>
+                        <td className={`mono ${delta.cls}`}>{delta.text}</td>
                       </tr>
                     )
                   })}
@@ -203,6 +208,7 @@ export function LiveArena() {
             <span>
               Round {state?.progress.round ?? '—'} · {state?.progress.submitted ?? 0} /{' '}
               {state?.progress.total ?? 0} teams submitted
+              {showBoard && teams.length > TOP_N ? ` · Top ${TOP_N}` : ''}
             </span>
             <span>{progressPct}%</span>
           </div>

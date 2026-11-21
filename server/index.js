@@ -190,7 +190,12 @@ async function maybeAutoReveal(roundHint) {
   const next = board.revealedRound + 1
   const target = roundHint && roundHint === next ? next : next
   const runs = await listCompetitionRuns(meta.competitionId)
-  const active = runs.filter((r) => r.status === 'IN_PROGRESS' || r.status === 'COMPLETED')
+  const active = runs.filter(
+    (r) =>
+      (r.status === 'IN_PROGRESS' || r.status === 'COMPLETED') &&
+      Array.isArray(r.history) &&
+      r.history.length > 0,
+  )
   if (!active.length) return board
   if (!active.every((r) => hasLockedRound(r, target))) return board
 
@@ -387,9 +392,10 @@ function rankResults(runs) {
     .map((r) => ({
       runId: r.runId,
       companyName: r.companyName,
+      status: r.status,
       completedAt: r.completedAt,
       createdAt: r.createdAt,
-      roundsPlayed: r.configSnapshot?.numRounds || r.history?.length || 0,
+      roundsPlayed: Array.isArray(r.history) ? r.history.length : 0,
       totalProfitM: r.cumulativeProfitM,
       finalPoolM: r.currentPoolM,
       budgetMode: r.configSnapshot?.budgetMode || 'A',
@@ -620,7 +626,14 @@ app.get(
   requireAdmin,
   asyncHandler(async (_req, res) => {
     const meta = await getMetaState()
-    const results = rankResults(await listCompletedRuns(meta.competitionId))
+    // Same set as live board: played teams (locked ≥1 round), not only fully completed
+    const runs = (await listCompetitionRuns(meta.competitionId)).filter(
+      (r) =>
+        (r.status === 'IN_PROGRESS' || r.status === 'COMPLETED') &&
+        Array.isArray(r.history) &&
+        r.history.length > 0,
+    )
+    const results = rankResults(runs)
     res.json({
       generatedAt: new Date().toISOString(),
       competitionId: meta.competitionId,
@@ -965,7 +978,12 @@ app.get(
     const board = await readLiveBoard()
     const payload = publicLivePayload(await computeLivePayload())
     const runs = await listCompetitionRuns(meta.competitionId)
-    const active = runs.filter((r) => r.status === 'IN_PROGRESS' || r.status === 'COMPLETED')
+    const active = runs.filter(
+      (r) =>
+        (r.status === 'IN_PROGRESS' || r.status === 'COMPLETED') &&
+        Array.isArray(r.history) &&
+        r.history.length > 0,
+    )
     const rounds = []
     for (let i = 1; i <= (meta.config.numRounds || 6); i++) {
       const submitted = active.filter((r) => hasLockedRound(r, i)).length

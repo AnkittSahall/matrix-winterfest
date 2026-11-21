@@ -306,9 +306,18 @@ p {
 }
 
 .btn:active:not(:disabled) {
-  transform: translateY(1px) scale(0.97);
+  transform: translateY(1px) scale(0.96);
   box-shadow: none;
-  filter: brightness(0.92);
+  filter: brightness(0.88);
+}
+
+.shell .btn:active:not(:disabled) {
+  transform: translateY(2px) scale(0.95);
+  filter: brightness(0.85);
+}
+
+.shell .btn-primary:active:not(:disabled) {
+  background: #8f0410;
 }
 
 .btn:focus-visible {

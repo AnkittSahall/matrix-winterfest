@@ -203,7 +203,13 @@ export function buildLivePayload({ config, liveBoard, runs, recentSubmitters = [
   // All runs in the active competition (reset only clears reveal state, not teams)
   const eventRuns = runs || []
 
-  const active = eventRuns.filter((r) => r.status === 'IN_PROGRESS' || r.status === 'COMPLETED')
+  // Ranked board: only teams that have locked at least one round (no empty joins)
+  const active = eventRuns.filter(
+    (r) =>
+      (r.status === 'IN_PROGRESS' || r.status === 'COMPLETED') &&
+      Array.isArray(r.history) &&
+      r.history.length > 0,
+  )
   const lobby = eventRuns.filter(
     (r) => r.status === 'BRIEFING' || r.status === 'IN_PROGRESS' || r.status === 'COMPLETED',
   )

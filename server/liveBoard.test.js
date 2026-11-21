@@ -130,12 +130,13 @@ describe('buildLivePayload', () => {
       liveBoard: { revealedRound: 0 },
       runs: [
         {
+          runId: 't1',
           companyName: 'Team One',
           status: 'IN_PROGRESS',
           currentRound: 1,
           currentPoolM: 100,
           createdAt: '2026-01-01T00:00:00.000Z',
-          history: [],
+          history: [{ round: 1, profitM: 1, lockedAt: '2026-01-01T01:00:00.000Z' }],
         },
       ],
       recentSubmitters: ['Team One'],
@@ -145,10 +146,9 @@ describe('buildLivePayload', () => {
     assert.equal(json.includes('scenario'), false)
     assert.equal(json.includes('factor'), false)
     assert.equal(json.includes('allocation'), false)
-    assert.equal(json.includes('runId'), false)
     assert.equal(json.includes('_meta'), false)
     assert.equal(pub.progress.total, 1)
-    assert.equal(pub.progress.submitted, 0)
+    assert.equal(pub.progress.submitted, 1)
   })
 
   it('reset does not hide existing competition teams', () => {
