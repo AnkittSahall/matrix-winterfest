@@ -99,24 +99,40 @@ async function readLiveBoard() {
 }
 
 async function writeLiveBoard(board) {
+  invalidateLiveCache()
   return saveLiveBoardState(normalizeLiveBoard(board))
 }
 
-async function computeLivePayload() {
+let livePayloadCache = { at: 0, payload: null }
+const LIVE_CACHE_MS = 2000
+
+function invalidateLiveCache() {
+  livePayloadCache = { at: 0, payload: null }
+}
+
+async function computeLivePayload(opts = {}) {
+  const bypassCache = !!opts.bypassCache
+  const now = Date.now()
+  if (!bypassCache && livePayloadCache.payload && now - livePayloadCache.at < LIVE_CACHE_MS) {
+    return livePayloadCache.payload
+  }
   const meta = await getMetaState()
   const board = await readLiveBoard()
   const runs = await listCompetitionRuns(meta.competitionId)
-  return buildLivePayload({
+  const payload = buildLivePayload({
     config: meta.config,
     liveBoard: board,
     runs,
     recentSubmitters: getRecentSubmitters(),
   })
+  livePayloadCache = { at: Date.now(), payload }
+  return payload
 }
 
 async function publishLive() {
   try {
-    const payload = publicLivePayload(await computeLivePayload())
+    invalidateLiveCache()
+    const payload = publicLivePayload(await computeLivePayload({ bypassCache: true }))
     broadcastLive(payload)
     return payload
   } catch (err) {

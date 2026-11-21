@@ -38,7 +38,7 @@ export function liveClientCount() {
   return clients.size
 }
 
-/** ~60 req/min per IP for live routes */
+/** ~180 req/min per IP for live routes (projector poll + admin refresh) */
 export function liveRateLimit(req, res, next) {
   const ip = req.headers['x-forwarded-for']?.toString().split(',')[0]?.trim() || req.ip || 'local'
   const now = Date.now()
@@ -48,7 +48,7 @@ export function liveRateLimit(req, res, next) {
     rateBuckets.set(ip, bucket)
   }
   bucket.count += 1
-  if (bucket.count > 60) {
+  if (bucket.count > 180) {
     return res.status(429).json({ error: 'Too many requests. Slow down.' })
   }
   next()
