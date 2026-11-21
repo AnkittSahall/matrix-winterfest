@@ -1,0 +1,147 @@
+{
+ "home": {
+  "name": "USA",
+  "countryRisk": "Low",
+  "tradeBarriers": null,
+  "industryRivalry": "High",
+  "culturalDistance": null,
+  "indulgence": "High",
+  "gdpPerCapita": 70249,
+  "gdpGrowthPct": 1.6,
+  "popGrowthPct": 0.5
+ },
+ "countries": [
+  {
+   "code": "AUS",
+   "name": "Australia",
+   "countryRisk": "Low",
+   "tradeBarriers": "Low",
+   "industryRivalry": "High",
+   "culturalDistance": "Low",
+   "indulgence": "High",
+   "gdpPerCapita": 60443,
+   "gdpGrowthPct": 2.1,
+   "popGrowthPct": 0.92
+  },
+  {
+   "code": "BRA",
+   "name": "Brazil",
+   "countryRisk": "Medium",
+   "tradeBarriers": "High",
+   "industryRivalry": "Low",
+   "culturalDistance": "Medium",
+   "indulgence": "Medium",
+   "gdpPerCapita": 7507,
+   "gdpGrowthPct": 1.8,
+   "popGrowthPct": 0.49
+  },
+  {
+   "code": "CAN",
+   "name": "Canada",
+   "countryRisk": "Low",
+   "tradeBarriers": "Low",
+   "industryRivalry": "High",
+   "culturalDistance": "Low",
+   "indulgence": "High",
+   "gdpPerCapita": 51988,
+   "gdpGrowthPct": 1.9,
+   "popGrowthPct": 0.8
+  },
+  {
+   "code": "CHN",
+   "name": "China",
+   "countryRisk": "Medium",
+   "tradeBarriers": "High",
+   "industryRivalry": "Medium",
+   "culturalDistance": "High",
+   "indulgence": "Low",
+   "gdpPerCapita": 12556,
+   "gdpGrowthPct": 5,
+   "popGrowthPct": -0.1
+  },
+  {
+   "code": "EGY",
+   "name": "Egypt",
+   "countryRisk": "High",
+   "tradeBarriers": "High",
+   "industryRivalry": "Low",
+   "culturalDistance": "High",
+   "indulgence": "Low",
+   "gdpPerCapita": 3699,
+   "gdpGrowthPct": 6,
+   "popGrowthPct": 1.41
+  },
+  {
+   "code": "FRA",
+   "name": "France",
+   "countryRisk": "Low",
+   "tradeBarriers": "Medium",
+   "industryRivalry": "Medium",
+   "culturalDistance": "Medium",
+   "indulgence": "Medium",
+   "gdpPerCapita": 43659,
+   "gdpGrowthPct": 1.5,
+   "popGrowthPct": 0.17
+  },
+  {
+   "code": "DEU",
+   "name": "Germany",
+   "countryRisk": "Low",
+   "tradeBarriers": "Medium",
+   "industryRivalry": "Medium",
+   "culturalDistance": "Medium",
+   "indulgence": "Medium",
+   "gdpPerCapita": 51204,
+   "gdpGrowthPct": 1.3,
+   "popGrowthPct": -0.09
+  },
+  {
+   "code": "IND",
+   "name": "India",
+   "countryRisk": "Medium",
+   "tradeBarriers": "High",
+   "industryRivalry": "Low",
+   "culturalDistance": "High",
+   "indulgence": "Low",
+   "gdpPerCapita": 2257,
+   "gdpGrowthPct": 6.2,
+   "popGrowthPct": 0.84
+  },
+  {
+   "code": "JPN",
+   "name": "Japan",
+   "countryRisk": "Low",
+   "tradeBarriers": "Medium",
+   "industryRivalry": "Medium",
+   "culturalDistance": "High",
+   "indulgence": "Medium",
+   "gdpPerCapita": 39313,
+   "gdpGrowthPct": 1,
+   "popGrowthPct": -0.57
+  },
+  {
+   "code": "ZAF",
+   "name": "S-Africa",
+   "countryRisk": "High",
+   "tradeBarriers": "High",
+   "industryRivalry": "Low",
+   "culturalDistance": "Low",
+   "indulgence": "Medium",
+   "gdpPerCapita": 7055,
+   "gdpGrowthPct": 1.3,
+   "popGrowthPct": 0.96
+  },
+  {
+   "code": "GBR",
+   "name": "UK",
+   "countryRisk": "Low",
+   "tradeBarriers": "Medium",
+   "industryRivalry": "High",
+   "culturalDistance": "Low",
+   "indulgence": "High",
+   "gdpPerCapita": 46510,
+   "gdpGrowthPct": 1.4,
+   "popGrowthPct": 0.3
+  }
+ ]
+}

@@ -1,0 +1,233 @@
+[
+ {
+  "scenarioId": 1,
+  "title": "Soft landing and a strong dollar",
+  "items": [
+   {
+    "order": 1,
+    "headline": "Eating out rebounds in Australia, Canada and the UK as inflation falls to 3%",
+    "body": "Restaurant sales in Australia, Canada and the UK rose about 7% year on year in the second half as inflation dropped from 7% to 3%. Casual-dining and quick-service chains report diners trading back up to full menus after two years of cutting back."
+   },
+   {
+    "order": 2,
+    "headline": "Modest dining recovery in France, Germany, Japan, Brazil and South Africa",
+    "body": "Restaurant traffic is up about 3% in France, Germany and Japan and about 4% in Brazil and South Africa. Wage growth has caught up with prices, but households remain more careful than their Anglo-American counterparts."
+   },
+   {
+    "order": 3,
+    "headline": "Dollar index jumps 9% to a four-year high",
+    "body": "The Egyptian pound, South African rand, Brazilian real, Indian rupee and Chinese yuan fell 5–12% against the dollar, while the euro, yen, sterling and the Canadian and Australian dollars slipped 3–6%. US companies see overseas profits shrink when converted to dollars. Owners of wholly owned outlets carry the whole loss, franchisors lose only a slice of the royalty, and joint venture partners share it."
+   },
+   {
+    "order": 4,
+    "headline": "India scraps its 30% local-sourcing quota for foreign restaurant chains",
+    "body": "The government cut approval time for foreign food-service brands from 18 months to 90 days and removed the 30% quota on locally sourced ingredients. Mall operators in Delhi, Mumbai and Bengaluru are offering prime sites, and 6 in 10 urban households earning above $8,000 a year say they would try a new international brand."
+   },
+   {
+    "order": 5,
+    "headline": "Egyptian pound loses a third of its value; inflation hits 31%",
+    "body": "After an IMF-linked float the pound slid from 31 to 48 per dollar within a month, and fuel subsidies were cut by 25%. Imported beef and cooking oil cost about 40% more, and restaurants report 15% fewer visits as families cut back. Chains that own their outlets carry the whole currency loss, while local partners and franchisees absorb part of it."
+   },
+   {
+    "order": 6,
+    "headline": "Commodity boom lifts Brazilian wages 6%",
+    "body": "Record soy, iron-ore and oil exports raised real wages about 6% in São Paulo state and the Midwest farm belt. Quick-service and casual-dining traffic is up 8% in cities with large agribusiness employers."
+   },
+   {
+    "order": 7,
+    "headline": "Chinese diners return: dining-out spending up 9% in tier-1 cities",
+    "body": "Beijing, Shanghai and Shenzhen report the strongest weekend restaurant traffic since the slowdown began. Smaller cities remain flat, and households stay cautious about big purchases."
+   }
+  ]
+ },
+ {
+  "scenarioId": 2,
+  "title": "Energy shock and supply-chain strain",
+  "items": [
+   {
+    "order": 1,
+    "headline": "European gas prices double; restaurant utility bills up 40% in Germany and the UK",
+    "body": "Wholesale gas doubled to about €90 per MWh after pipeline outages. Utility bills for restaurants rose about 40% in Germany and the UK and 25% in nuclear-heavy France, and Japan pays more for imported LNG. Operators of their own kitchens carry the bill, while franchisors only lose royalties when franchisees cut opening hours."
+   },
+   {
+    "order": 2,
+    "headline": "Energy exporters cash in: Alberta, Western Australia and Brazil's oil coast boom",
+    "body": "Oil, gas and coal revenues lift wages about 5% in resource regions such as Alberta, Western Australia and Brazil's offshore-oil coast. Restaurant traffic in Calgary, Perth and Macaé is up 6–10%."
+   },
+   {
+    "order": 3,
+    "headline": "South Africa's grid fails: up to 10 hours of power cuts a day",
+    "body": "Stage-6 load-shedding forces restaurants onto diesel generators, raising energy costs about 30% and shortening opening hours. Two rating agencies downgrade the country's outlook, and investors question whether the grid can recover."
+   },
+   {
+    "order": 4,
+    "headline": "Container freight rates triple after a key shipping strait closes",
+    "body": "Imported beef, packaging and sauces are scarce. Countries with high import barriers (Brazil, China, Egypt, India, South Africa) have few alternative suppliers and see ingredient costs up about 12%, while Europe, the UK and Japan see about 5% and Canada and Australia about 3%. Franchisors that oblige franchisees to buy from them feel the squeeze more than joint ventures that source locally."
+   },
+   {
+    "order": 5,
+    "headline": "China's property slump: home prices fall 12%, household spending drops",
+    "body": "Two large developers default and households feel poorer. Chinese restaurant spending falls about 7% in non-capital cities, and tourist spending in Australia and Japan weakens as Chinese visitors cut back."
+   }
+  ]
+ },
+ {
+  "scenarioId": 3,
+  "title": "Trade fragments and nationalism rises",
+  "items": [
+   {
+    "order": 1,
+    "headline": "US–China tariffs reach 40%; Beijing opens food-safety reviews of US restaurant brands",
+    "body": "Beijing retaliated with a 40% tariff on US food imports and ordered audits of US-linked chains. New-outlet permits slowed to a trickle, and wholly owned US brands are the main target. Joint ventures with local partners are being treated more gently."
+   },
+   {
+    "order": 2,
+    "headline": "Brazil, Egypt and South Africa demand 50% local sourcing from restaurant chains",
+    "body": "From January, foreign food-service brands must source half of their ingredients locally or pay a 15% levy on imports. Chains that tie franchisees to central US purchasing face the biggest disruption, while those with local partners already buy locally."
+   },
+   {
+    "order": 3,
+    "headline": "Buy-local campaigns spread: foreign chains lose younger diners in culturally distant markets",
+    "body": "National food-brand campaigns in China, India, Egypt and Japan push consumers toward domestic names, and foreign chains lose 5–10% of diners under 30 there. Brazil, France and Germany see a smaller 2–4% dip. Brands with a local partner or franchisee look less foreign."
+   },
+   {
+    "order": 4,
+    "headline": "Germany enters recession: GDP down 0.8%, unemployment at 6.2%",
+    "body": "Factory orders fall for five months running and job cuts spread to services. France and the UK feel a smaller spill-over through weaker exports."
+   },
+   {
+    "order": 5,
+    "headline": "Canada and Australia welcome record immigration: population up 2.5%",
+    "body": "Young arrivals fill city centres in Toronto, Vancouver, Sydney and Melbourne. Restaurant traffic near new housing and campuses is up about 8%."
+   },
+   {
+    "order": 6,
+    "headline": "Brazilian real falls 14% as election nears and fiscal worries grow",
+    "body": "Debt worries and populist spending promises send the real sliding, and foreign investors delay projects until after the vote. Import costs rise, and a few foreign chains pause openings."
+   }
+  ]
+ },
+ {
+  "scenarioId": 4,
+  "title": "Recoveries, a truce and a wellness shift",
+  "items": [
+   {
+    "order": 1,
+    "headline": "Sugar, salt and fat levies spread; burger and fried-chicken visits fall",
+    "body": "The UK, Australia and Canada tax high-sugar and ultra-processed menu items and require calorie labels. Visits to burger and fried-chicken chains fall about 8% there, and about 3% in France, Germany, Japan, Brazil and South Africa. Markets with less indulgent habits (China, India, Egypt) barely notice."
+   },
+   {
+    "order": 2,
+    "headline": "Egypt steadies: Gulf funds invest $15bn and inflation falls to 14%",
+    "body": "Gulf sovereign funds and an IMF programme rebuild reserves, and the pound has held at 48 per dollar for six months. Restaurant traffic in Cairo and Alexandria is up about 9%, and imported ingredient costs ease."
+   },
+   {
+    "order": 3,
+    "headline": "Japan welcomes 45 million visitors as the yen weakens to 165 per dollar",
+    "body": "Relaxed visas and a cheap yen bring record tourism. Restaurants in Tokyo, Osaka and Kyoto report visitor-driven sales up about 10%."
+   },
+   {
+    "order": 4,
+    "headline": "US–China truce cuts tariffs to 15%; Beijing hands out household spending vouchers",
+    "body": "A partial truce lowers tariffs, and Beijing announces consumption vouchers for lower-income households. US brands report permit approvals resuming, and restaurant traffic in China is up about 6%."
+   },
+   {
+    "order": 5,
+    "headline": "European gas prices halve; German factory orders recover",
+    "body": "Storage refills and new LNG terminals bring gas back to €45 per MWh. Restaurant utility bills fall by roughly a fifth in Germany, France and the UK, and German consumers start spending again."
+   },
+   {
+    "order": 6,
+    "headline": "UK mortgage resets and French transport and pension strikes squeeze diners",
+    "body": "About 1.5 million UK households face higher mortgage payments, cutting eating-out budgets. In France, a month of strikes disrupts deliveries and lifts wage and logistics costs for restaurants."
+   }
+  ]
+ },
+ {
+  "scenarioId": 5,
+  "title": "Slowdown, new rivals and a softer dollar",
+  "items": [
+   {
+    "order": 1,
+    "headline": "Consumer credit tightens worldwide; restaurant traffic dips about 3%",
+    "body": "Consumer loan rates rise about 2 points and card spending slows in nearly every market. Diners shift from full-service to cheaper quick-service meals."
+   },
+   {
+    "order": 2,
+    "headline": "Emerging-market stress: Egypt and South Africa borrowing costs jump 4 points",
+    "body": "Investors pull money from emerging markets. Egypt and South Africa suffer the sharpest outflows and currency weakness, Brazil, India and China see smaller ones, and developed markets are barely affected."
+   },
+   {
+    "order": 3,
+    "headline": "Rival US chains announce 300+ openings in Brazil, India, Egypt and South Africa",
+    "body": "Three large American restaurant groups target markets where few competitors exist, and the Chinese, European and Japanese markets receive fewer openings. Rents and staff costs rise in new-entry districts, and incumbents see their share shrink."
+   },
+   {
+    "order": 4,
+    "headline": "US rate cuts push the dollar down 7%",
+    "body": "Foreign profits convert into more dollars, and emerging-market currencies recover the most, with the rand, pound and real up 6–9% and developed-market currencies up 3–4%."
+   },
+   {
+    "order": 5,
+    "headline": "India's monsoon fails: food prices up 14%",
+    "body": "Rainfall is 20% below normal and vegetable and dairy prices spike, raising ingredient costs. Rural incomes fall and small-town outlets report weaker sales."
+   },
+   {
+    "order": 6,
+    "headline": "Housing correction in Australia and Canada: prices fall 11%",
+    "body": "Falling property values and high mortgage costs lead households to cut discretionary spending. Restaurant traffic is down about 6% in Sydney, Melbourne, Toronto and Vancouver."
+   }
+  ]
+ },
+ {
+  "scenarioId": 6,
+  "title": "Normalisation, but uneven",
+  "items": [
+   {
+    "order": 1,
+    "headline": "Central banks cut rates: mortgage relief lifts spending in Australia, Canada, the UK and Brazil",
+    "body": "Rates fall 1.5 points in Australia, Canada and the UK and about 3 points in Brazil. Restaurant traffic is up about 7% in the first group, about 5% in France and Germany, and more modestly in South Africa and Japan."
+   },
+   {
+    "order": 2,
+    "headline": "Delivery platforms and kitchen automation cut labour costs 8% in high-wage markets",
+    "body": "Smarter scheduling, delivery platforms and kitchen automation reduce staffing hours in Australia, Canada, the UK, France, Germany and Japan. Lower-wage markets see only small gains."
+   },
+   {
+    "order": 3,
+    "headline": "South Africa's coalition steadies and power returns",
+    "body": "Private solar and gas projects end load-shedding, and the coalition passes its first full budget. Restaurants cut diesel use, and foreign investors return to Cape Town and Johannesburg."
+   },
+   {
+    "order": 4,
+    "headline": "India's urban consumption surges as Western brands become aspirational",
+    "body": "Urban incomes rise about 10% and tariff cuts make sourcing imported ingredients easier. Foreign chains report sales in Delhi, Mumbai and Bengaluru up about 15%."
+   },
+   {
+    "order": 5,
+    "headline": "Brazil simplifies consumption taxes and lowers import duties",
+    "body": "A single consumption tax replaces five overlapping ones and import duties on food inputs fall. Restaurant operators in São Paulo and Rio expect operating costs to fall about 4%."
+   },
+   {
+    "order": 6,
+    "headline": "Shrinking populations bite in Japan, China and Germany",
+    "body": "Japan and China see falling working-age populations and youth unemployment, and households save more. Restaurants in smaller cities close, and Germany feels a smaller version of the same trend."
+   },
+   {
+    "order": 7,
+    "headline": "Egypt's canal revenue falls and fuel prices rise again",
+    "body": "Shipping lines reroute away from the canal, cutting hard-currency earnings by about a fifth, and a new fuel price rise renews cost-of-living pressure. Foreign investors turn cautious again."
+   },
+   {
+    "order": 8,
+    "headline": "Drought and wildfires push beef and produce prices up 15% in Australia and Canada",
+    "body": "Herds are culled and crops lost across New South Wales, Queensland, Alberta and British Columbia. Beef and produce prices rise about 15%, squeezing restaurant margins despite good traffic."
+   },
+   {
+    "order": 9,
+    "headline": "UK raises employer taxes and minimum wage; restaurant labour costs up 6%",
+    "body": "Higher employer national insurance and a higher minimum wage lift staffing costs. Operators cut hours and raise prices, and franchisors see slower new franchise signings."
+   }
+  ]
+ }
+]

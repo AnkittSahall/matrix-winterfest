@@ -1,0 +1,32 @@
+[
+ {
+  "code": "FRANCHISING",
+  "name": "Franchising",
+  "outletsOnEntry": 25,
+  "entryCostUsd": 250000,
+  "outletCostToYouUsd": 500000,
+  "revenueModel": "One-off franchise fee $20,000 per outlet plus royalty of 6% of annual revenue",
+  "ongoingCost": "Support and supervision $12,500 per outlet per year",
+  "notes": "Can oblige franchisees to source ingredients from you"
+ },
+ {
+  "code": "JOINT_VENTURE",
+  "name": "Joint Venture",
+  "outletsOnEntry": 5,
+  "entryCostUsd": 250000,
+  "outletCostToYouUsd": 250000,
+  "revenueModel": "All revenues and costs shared equally with partner (50% share)",
+  "ongoingCost": null,
+  "notes": "Local partner knows the local environment; finding a reliable partner is difficult"
+ },
+ {
+  "code": "WHOLLY_OWNED",
+  "name": "Wholly Owned Subsidiary",
+  "outletsOnEntry": 5,
+  "entryCostUsd": 250000,
+  "outletCostToYouUsd": 500000,
+  "revenueModel": "You own and operate the restaurants",
+  "ongoingCost": null,
+  "notes": null
+ }
+]

@@ -1,0 +1,1190 @@
+[
+ {
+  "scenarioId": 1,
+  "countryCode": "AUS",
+  "mode": "FRANCHISING",
+  "multiplier": 1.052
+ },
+ {
+  "scenarioId": 1,
+  "countryCode": "AUS",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 1.091
+ },
+ {
+  "scenarioId": 1,
+  "countryCode": "AUS",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 1.095
+ },
+ {
+  "scenarioId": 1,
+  "countryCode": "BRA",
+  "mode": "FRANCHISING",
+  "multiplier": 1.045
+ },
+ {
+  "scenarioId": 1,
+  "countryCode": "BRA",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 1.074
+ },
+ {
+  "scenarioId": 1,
+  "countryCode": "BRA",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 1.072
+ },
+ {
+  "scenarioId": 1,
+  "countryCode": "CAN",
+  "mode": "FRANCHISING",
+  "multiplier": 1.05
+ },
+ {
+  "scenarioId": 1,
+  "countryCode": "CAN",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 1.087
+ },
+ {
+  "scenarioId": 1,
+  "countryCode": "CAN",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 1.091
+ },
+ {
+  "scenarioId": 1,
+  "countryCode": "CHN",
+  "mode": "FRANCHISING",
+  "multiplier": 1.038
+ },
+ {
+  "scenarioId": 1,
+  "countryCode": "CHN",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 1.065
+ },
+ {
+  "scenarioId": 1,
+  "countryCode": "CHN",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 1.053
+ },
+ {
+  "scenarioId": 1,
+  "countryCode": "EGY",
+  "mode": "FRANCHISING",
+  "multiplier": 0.976
+ },
+ {
+  "scenarioId": 1,
+  "countryCode": "EGY",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 0.943
+ },
+ {
+  "scenarioId": 1,
+  "countryCode": "EGY",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 0.871
+ },
+ {
+  "scenarioId": 1,
+  "countryCode": "FRA",
+  "mode": "FRANCHISING",
+  "multiplier": 1.036
+ },
+ {
+  "scenarioId": 1,
+  "countryCode": "FRA",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 1.064
+ },
+ {
+  "scenarioId": 1,
+  "countryCode": "FRA",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 1.064
+ },
+ {
+  "scenarioId": 1,
+  "countryCode": "DEU",
+  "mode": "FRANCHISING",
+  "multiplier": 1.034
+ },
+ {
+  "scenarioId": 1,
+  "countryCode": "DEU",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 1.062
+ },
+ {
+  "scenarioId": 1,
+  "countryCode": "DEU",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 1.061
+ },
+ {
+  "scenarioId": 1,
+  "countryCode": "IND",
+  "mode": "FRANCHISING",
+  "multiplier": 1.076
+ },
+ {
+  "scenarioId": 1,
+  "countryCode": "IND",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 1.112
+ },
+ {
+  "scenarioId": 1,
+  "countryCode": "IND",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 1.133
+ },
+ {
+  "scenarioId": 1,
+  "countryCode": "JPN",
+  "mode": "FRANCHISING",
+  "multiplier": 1.027
+ },
+ {
+  "scenarioId": 1,
+  "countryCode": "JPN",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 1.051
+ },
+ {
+  "scenarioId": 1,
+  "countryCode": "JPN",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 1.045
+ },
+ {
+  "scenarioId": 1,
+  "countryCode": "ZAF",
+  "mode": "FRANCHISING",
+  "multiplier": 1.015
+ },
+ {
+  "scenarioId": 1,
+  "countryCode": "ZAF",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 1.02
+ },
+ {
+  "scenarioId": 1,
+  "countryCode": "ZAF",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 0.996
+ },
+ {
+  "scenarioId": 1,
+  "countryCode": "GBR",
+  "mode": "FRANCHISING",
+  "multiplier": 1.042
+ },
+ {
+  "scenarioId": 1,
+  "countryCode": "GBR",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 1.076
+ },
+ {
+  "scenarioId": 1,
+  "countryCode": "GBR",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 1.074
+ },
+ {
+  "scenarioId": 2,
+  "countryCode": "AUS",
+  "mode": "FRANCHISING",
+  "multiplier": 1.045
+ },
+ {
+  "scenarioId": 2,
+  "countryCode": "AUS",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 1.083
+ },
+ {
+  "scenarioId": 2,
+  "countryCode": "AUS",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 1.085
+ },
+ {
+  "scenarioId": 2,
+  "countryCode": "BRA",
+  "mode": "FRANCHISING",
+  "multiplier": 1.025
+ },
+ {
+  "scenarioId": 2,
+  "countryCode": "BRA",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 1.051
+ },
+ {
+  "scenarioId": 2,
+  "countryCode": "BRA",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 1.037
+ },
+ {
+  "scenarioId": 2,
+  "countryCode": "CAN",
+  "mode": "FRANCHISING",
+  "multiplier": 1.053
+ },
+ {
+  "scenarioId": 2,
+  "countryCode": "CAN",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 1.095
+ },
+ {
+  "scenarioId": 2,
+  "countryCode": "CAN",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 1.101
+ },
+ {
+  "scenarioId": 2,
+  "countryCode": "CHN",
+  "mode": "FRANCHISING",
+  "multiplier": 0.99
+ },
+ {
+  "scenarioId": 2,
+  "countryCode": "CHN",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 0.998
+ },
+ {
+  "scenarioId": 2,
+  "countryCode": "CHN",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 0.963
+ },
+ {
+  "scenarioId": 2,
+  "countryCode": "EGY",
+  "mode": "FRANCHISING",
+  "multiplier": 0.982
+ },
+ {
+  "scenarioId": 2,
+  "countryCode": "EGY",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 0.971
+ },
+ {
+  "scenarioId": 2,
+  "countryCode": "EGY",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 0.912
+ },
+ {
+  "scenarioId": 2,
+  "countryCode": "FRA",
+  "mode": "FRANCHISING",
+  "multiplier": 1.011
+ },
+ {
+  "scenarioId": 2,
+  "countryCode": "FRA",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 1.018
+ },
+ {
+  "scenarioId": 2,
+  "countryCode": "FRA",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 0.994
+ },
+ {
+  "scenarioId": 2,
+  "countryCode": "DEU",
+  "mode": "FRANCHISING",
+  "multiplier": 1
+ },
+ {
+  "scenarioId": 2,
+  "countryCode": "DEU",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 0.996
+ },
+ {
+  "scenarioId": 2,
+  "countryCode": "DEU",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 0.961
+ },
+ {
+  "scenarioId": 2,
+  "countryCode": "IND",
+  "mode": "FRANCHISING",
+  "multiplier": 1.051
+ },
+ {
+  "scenarioId": 2,
+  "countryCode": "IND",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 1.085
+ },
+ {
+  "scenarioId": 2,
+  "countryCode": "IND",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 1.09
+ },
+ {
+  "scenarioId": 2,
+  "countryCode": "JPN",
+  "mode": "FRANCHISING",
+  "multiplier": 1.004
+ },
+ {
+  "scenarioId": 2,
+  "countryCode": "JPN",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 1.011
+ },
+ {
+  "scenarioId": 2,
+  "countryCode": "JPN",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 0.985
+ },
+ {
+  "scenarioId": 2,
+  "countryCode": "ZAF",
+  "mode": "FRANCHISING",
+  "multiplier": 0.968
+ },
+ {
+  "scenarioId": 2,
+  "countryCode": "ZAF",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 0.939
+ },
+ {
+  "scenarioId": 2,
+  "countryCode": "ZAF",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 0.871
+ },
+ {
+  "scenarioId": 2,
+  "countryCode": "GBR",
+  "mode": "FRANCHISING",
+  "multiplier": 1.005
+ },
+ {
+  "scenarioId": 2,
+  "countryCode": "GBR",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 1.008
+ },
+ {
+  "scenarioId": 2,
+  "countryCode": "GBR",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 0.974
+ },
+ {
+  "scenarioId": 3,
+  "countryCode": "AUS",
+  "mode": "FRANCHISING",
+  "multiplier": 1.051
+ },
+ {
+  "scenarioId": 3,
+  "countryCode": "AUS",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 1.093
+ },
+ {
+  "scenarioId": 3,
+  "countryCode": "AUS",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 1.101
+ },
+ {
+  "scenarioId": 3,
+  "countryCode": "BRA",
+  "mode": "FRANCHISING",
+  "multiplier": 0.973
+ },
+ {
+  "scenarioId": 3,
+  "countryCode": "BRA",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 0.968
+ },
+ {
+  "scenarioId": 3,
+  "countryCode": "BRA",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 0.912
+ },
+ {
+  "scenarioId": 3,
+  "countryCode": "CAN",
+  "mode": "FRANCHISING",
+  "multiplier": 1.056
+ },
+ {
+  "scenarioId": 3,
+  "countryCode": "CAN",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 1.1
+ },
+ {
+  "scenarioId": 3,
+  "countryCode": "CAN",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 1.111
+ },
+ {
+  "scenarioId": 3,
+  "countryCode": "CHN",
+  "mode": "FRANCHISING",
+  "multiplier": 0.953
+ },
+ {
+  "scenarioId": 3,
+  "countryCode": "CHN",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 0.945
+ },
+ {
+  "scenarioId": 3,
+  "countryCode": "CHN",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 0.868
+ },
+ {
+  "scenarioId": 3,
+  "countryCode": "EGY",
+  "mode": "FRANCHISING",
+  "multiplier": 0.982
+ },
+ {
+  "scenarioId": 3,
+  "countryCode": "EGY",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 0.981
+ },
+ {
+  "scenarioId": 3,
+  "countryCode": "EGY",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 0.919
+ },
+ {
+  "scenarioId": 3,
+  "countryCode": "FRA",
+  "mode": "FRANCHISING",
+  "multiplier": 1.003
+ },
+ {
+  "scenarioId": 3,
+  "countryCode": "FRA",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 1.009
+ },
+ {
+  "scenarioId": 3,
+  "countryCode": "FRA",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 0.984
+ },
+ {
+  "scenarioId": 3,
+  "countryCode": "DEU",
+  "mode": "FRANCHISING",
+  "multiplier": 0.986
+ },
+ {
+  "scenarioId": 3,
+  "countryCode": "DEU",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 0.979
+ },
+ {
+  "scenarioId": 3,
+  "countryCode": "DEU",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 0.943
+ },
+ {
+  "scenarioId": 3,
+  "countryCode": "IND",
+  "mode": "FRANCHISING",
+  "multiplier": 1.045
+ },
+ {
+  "scenarioId": 3,
+  "countryCode": "IND",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 1.074
+ },
+ {
+  "scenarioId": 3,
+  "countryCode": "IND",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 1.067
+ },
+ {
+  "scenarioId": 3,
+  "countryCode": "JPN",
+  "mode": "FRANCHISING",
+  "multiplier": 0.999
+ },
+ {
+  "scenarioId": 3,
+  "countryCode": "JPN",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 1.005
+ },
+ {
+  "scenarioId": 3,
+  "countryCode": "JPN",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 0.97
+ },
+ {
+  "scenarioId": 3,
+  "countryCode": "ZAF",
+  "mode": "FRANCHISING",
+  "multiplier": 0.969
+ },
+ {
+  "scenarioId": 3,
+  "countryCode": "ZAF",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 0.953
+ },
+ {
+  "scenarioId": 3,
+  "countryCode": "ZAF",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 0.896
+ },
+ {
+  "scenarioId": 3,
+  "countryCode": "GBR",
+  "mode": "FRANCHISING",
+  "multiplier": 1.006
+ },
+ {
+  "scenarioId": 3,
+  "countryCode": "GBR",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 1.014
+ },
+ {
+  "scenarioId": 3,
+  "countryCode": "GBR",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 0.992
+ },
+ {
+  "scenarioId": 4,
+  "countryCode": "AUS",
+  "mode": "FRANCHISING",
+  "multiplier": 1.026
+ },
+ {
+  "scenarioId": 4,
+  "countryCode": "AUS",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 1.051
+ },
+ {
+  "scenarioId": 4,
+  "countryCode": "AUS",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 1.05
+ },
+ {
+  "scenarioId": 4,
+  "countryCode": "BRA",
+  "mode": "FRANCHISING",
+  "multiplier": 0.984
+ },
+ {
+  "scenarioId": 4,
+  "countryCode": "BRA",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 0.984
+ },
+ {
+  "scenarioId": 4,
+  "countryCode": "BRA",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 0.948
+ },
+ {
+  "scenarioId": 4,
+  "countryCode": "CAN",
+  "mode": "FRANCHISING",
+  "multiplier": 1.026
+ },
+ {
+  "scenarioId": 4,
+  "countryCode": "CAN",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 1.052
+ },
+ {
+  "scenarioId": 4,
+  "countryCode": "CAN",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 1.052
+ },
+ {
+  "scenarioId": 4,
+  "countryCode": "CHN",
+  "mode": "FRANCHISING",
+  "multiplier": 1.042
+ },
+ {
+  "scenarioId": 4,
+  "countryCode": "CHN",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 1.072
+ },
+ {
+  "scenarioId": 4,
+  "countryCode": "CHN",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 1.064
+ },
+ {
+  "scenarioId": 4,
+  "countryCode": "EGY",
+  "mode": "FRANCHISING",
+  "multiplier": 1.056
+ },
+ {
+  "scenarioId": 4,
+  "countryCode": "EGY",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 1.115
+ },
+ {
+  "scenarioId": 4,
+  "countryCode": "EGY",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 1.129
+ },
+ {
+  "scenarioId": 4,
+  "countryCode": "FRA",
+  "mode": "FRANCHISING",
+  "multiplier": 0.999
+ },
+ {
+  "scenarioId": 4,
+  "countryCode": "FRA",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 1.005
+ },
+ {
+  "scenarioId": 4,
+  "countryCode": "FRA",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 0.987
+ },
+ {
+  "scenarioId": 4,
+  "countryCode": "DEU",
+  "mode": "FRANCHISING",
+  "multiplier": 1.023
+ },
+ {
+  "scenarioId": 4,
+  "countryCode": "DEU",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 1.052
+ },
+ {
+  "scenarioId": 4,
+  "countryCode": "DEU",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 1.055
+ },
+ {
+  "scenarioId": 4,
+  "countryCode": "IND",
+  "mode": "FRANCHISING",
+  "multiplier": 1.048
+ },
+ {
+  "scenarioId": 4,
+  "countryCode": "IND",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 1.077
+ },
+ {
+  "scenarioId": 4,
+  "countryCode": "IND",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 1.079
+ },
+ {
+  "scenarioId": 4,
+  "countryCode": "JPN",
+  "mode": "FRANCHISING",
+  "multiplier": 1.027
+ },
+ {
+  "scenarioId": 4,
+  "countryCode": "JPN",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 1.055
+ },
+ {
+  "scenarioId": 4,
+  "countryCode": "JPN",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 1.049
+ },
+ {
+  "scenarioId": 4,
+  "countryCode": "ZAF",
+  "mode": "FRANCHISING",
+  "multiplier": 0.982
+ },
+ {
+  "scenarioId": 4,
+  "countryCode": "ZAF",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 0.973
+ },
+ {
+  "scenarioId": 4,
+  "countryCode": "ZAF",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 0.934
+ },
+ {
+  "scenarioId": 4,
+  "countryCode": "GBR",
+  "mode": "FRANCHISING",
+  "multiplier": 0.987
+ },
+ {
+  "scenarioId": 4,
+  "countryCode": "GBR",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 0.988
+ },
+ {
+  "scenarioId": 4,
+  "countryCode": "GBR",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 0.968
+ },
+ {
+  "scenarioId": 5,
+  "countryCode": "AUS",
+  "mode": "FRANCHISING",
+  "multiplier": 1.001
+ },
+ {
+  "scenarioId": 5,
+  "countryCode": "AUS",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 1.013
+ },
+ {
+  "scenarioId": 5,
+  "countryCode": "AUS",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 1.005
+ },
+ {
+  "scenarioId": 5,
+  "countryCode": "BRA",
+  "mode": "FRANCHISING",
+  "multiplier": 0.967
+ },
+ {
+  "scenarioId": 5,
+  "countryCode": "BRA",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 0.967
+ },
+ {
+  "scenarioId": 5,
+  "countryCode": "BRA",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 0.942
+ },
+ {
+  "scenarioId": 5,
+  "countryCode": "CAN",
+  "mode": "FRANCHISING",
+  "multiplier": 0.999
+ },
+ {
+  "scenarioId": 5,
+  "countryCode": "CAN",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 1.009
+ },
+ {
+  "scenarioId": 5,
+  "countryCode": "CAN",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 1.001
+ },
+ {
+  "scenarioId": 5,
+  "countryCode": "CHN",
+  "mode": "FRANCHISING",
+  "multiplier": 1.041
+ },
+ {
+  "scenarioId": 5,
+  "countryCode": "CHN",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 1.074
+ },
+ {
+  "scenarioId": 5,
+  "countryCode": "CHN",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 1.085
+ },
+ {
+  "scenarioId": 5,
+  "countryCode": "EGY",
+  "mode": "FRANCHISING",
+  "multiplier": 1.01
+ },
+ {
+  "scenarioId": 5,
+  "countryCode": "EGY",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 1.042
+ },
+ {
+  "scenarioId": 5,
+  "countryCode": "EGY",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 1.04
+ },
+ {
+  "scenarioId": 5,
+  "countryCode": "FRA",
+  "mode": "FRANCHISING",
+  "multiplier": 0.998
+ },
+ {
+  "scenarioId": 5,
+  "countryCode": "FRA",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 1.01
+ },
+ {
+  "scenarioId": 5,
+  "countryCode": "FRA",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 1.003
+ },
+ {
+  "scenarioId": 5,
+  "countryCode": "DEU",
+  "mode": "FRANCHISING",
+  "multiplier": 1.015
+ },
+ {
+  "scenarioId": 5,
+  "countryCode": "DEU",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 1.043
+ },
+ {
+  "scenarioId": 5,
+  "countryCode": "DEU",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 1.05
+ },
+ {
+  "scenarioId": 5,
+  "countryCode": "IND",
+  "mode": "FRANCHISING",
+  "multiplier": 0.982
+ },
+ {
+  "scenarioId": 5,
+  "countryCode": "IND",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 0.976
+ },
+ {
+  "scenarioId": 5,
+  "countryCode": "IND",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 0.948
+ },
+ {
+  "scenarioId": 5,
+  "countryCode": "JPN",
+  "mode": "FRANCHISING",
+  "multiplier": 1.012
+ },
+ {
+  "scenarioId": 5,
+  "countryCode": "JPN",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 1.037
+ },
+ {
+  "scenarioId": 5,
+  "countryCode": "JPN",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 1.037
+ },
+ {
+  "scenarioId": 5,
+  "countryCode": "ZAF",
+  "mode": "FRANCHISING",
+  "multiplier": 0.954
+ },
+ {
+  "scenarioId": 5,
+  "countryCode": "ZAF",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 0.938
+ },
+ {
+  "scenarioId": 5,
+  "countryCode": "ZAF",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 0.896
+ },
+ {
+  "scenarioId": 5,
+  "countryCode": "GBR",
+  "mode": "FRANCHISING",
+  "multiplier": 0.997
+ },
+ {
+  "scenarioId": 5,
+  "countryCode": "GBR",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 1.008
+ },
+ {
+  "scenarioId": 5,
+  "countryCode": "GBR",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 0.997
+ },
+ {
+  "scenarioId": 6,
+  "countryCode": "AUS",
+  "mode": "FRANCHISING",
+  "multiplier": 1.031
+ },
+ {
+  "scenarioId": 6,
+  "countryCode": "AUS",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 1.061
+ },
+ {
+  "scenarioId": 6,
+  "countryCode": "AUS",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 1.063
+ },
+ {
+  "scenarioId": 6,
+  "countryCode": "BRA",
+  "mode": "FRANCHISING",
+  "multiplier": 1.037
+ },
+ {
+  "scenarioId": 6,
+  "countryCode": "BRA",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 1.068
+ },
+ {
+  "scenarioId": 6,
+  "countryCode": "BRA",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 1.083
+ },
+ {
+  "scenarioId": 6,
+  "countryCode": "CAN",
+  "mode": "FRANCHISING",
+  "multiplier": 1.029
+ },
+ {
+  "scenarioId": 6,
+  "countryCode": "CAN",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 1.057
+ },
+ {
+  "scenarioId": 6,
+  "countryCode": "CAN",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 1.059
+ },
+ {
+  "scenarioId": 6,
+  "countryCode": "CHN",
+  "mode": "FRANCHISING",
+  "multiplier": 1.018
+ },
+ {
+  "scenarioId": 6,
+  "countryCode": "CHN",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 1.04
+ },
+ {
+  "scenarioId": 6,
+  "countryCode": "CHN",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 1.038
+ },
+ {
+  "scenarioId": 6,
+  "countryCode": "EGY",
+  "mode": "FRANCHISING",
+  "multiplier": 0.997
+ },
+ {
+  "scenarioId": 6,
+  "countryCode": "EGY",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 1.008
+ },
+ {
+  "scenarioId": 6,
+  "countryCode": "EGY",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 0.991
+ },
+ {
+  "scenarioId": 6,
+  "countryCode": "FRA",
+  "mode": "FRANCHISING",
+  "multiplier": 1.035
+ },
+ {
+  "scenarioId": 6,
+  "countryCode": "FRA",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 1.08
+ },
+ {
+  "scenarioId": 6,
+  "countryCode": "FRA",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 1.1
+ },
+ {
+  "scenarioId": 6,
+  "countryCode": "DEU",
+  "mode": "FRANCHISING",
+  "multiplier": 1.029
+ },
+ {
+  "scenarioId": 6,
+  "countryCode": "DEU",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 1.07
+ },
+ {
+  "scenarioId": 6,
+  "countryCode": "DEU",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 1.087
+ },
+ {
+  "scenarioId": 6,
+  "countryCode": "IND",
+  "mode": "FRANCHISING",
+  "multiplier": 1.048
+ },
+ {
+  "scenarioId": 6,
+  "countryCode": "IND",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 1.085
+ },
+ {
+  "scenarioId": 6,
+  "countryCode": "IND",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 1.107
+ },
+ {
+  "scenarioId": 6,
+  "countryCode": "JPN",
+  "mode": "FRANCHISING",
+  "multiplier": 1.01
+ },
+ {
+  "scenarioId": 6,
+  "countryCode": "JPN",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 1.04
+ },
+ {
+  "scenarioId": 6,
+  "countryCode": "JPN",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 1.047
+ },
+ {
+  "scenarioId": 6,
+  "countryCode": "ZAF",
+  "mode": "FRANCHISING",
+  "multiplier": 1.018
+ },
+ {
+  "scenarioId": 6,
+  "countryCode": "ZAF",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 1.054
+ },
+ {
+  "scenarioId": 6,
+  "countryCode": "ZAF",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 1.07
+ },
+ {
+  "scenarioId": 6,
+  "countryCode": "GBR",
+  "mode": "FRANCHISING",
+  "multiplier": 1.035
+ },
+ {
+  "scenarioId": 6,
+  "countryCode": "GBR",
+  "mode": "JOINT_VENTURE",
+  "multiplier": 1.071
+ },
+ {
+  "scenarioId": 6,
+  "countryCode": "GBR",
+  "mode": "WHOLLY_OWNED",
+  "multiplier": 1.076
+ }
+]
